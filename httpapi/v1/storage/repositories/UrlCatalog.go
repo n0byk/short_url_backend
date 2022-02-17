@@ -22,7 +22,7 @@ func GetElement(param string) (string, error) {
 
 	fullURL, exists := storage.URLCatalogDB[param]
 	if !exists {
-		return "", errors.New("Cant get URL")
+		return "", errors.New("Cant_get_URL")
 	}
 
 	return fullURL, nil
