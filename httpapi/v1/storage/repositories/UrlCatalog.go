@@ -14,14 +14,13 @@ type UrlCatalog interface {
 }
 
 func AddElement(params entities.AddElement) {
-	storage.UrlCatalogDb[params.ShortUrl] = string(params.UrlBytes)
+	storage.UrlCatalogDb[params.ShortURL] = string(params.URLBytes)
 }
 
 func GetElement(param string) (string, error) {
 	log.Print(storage.UrlCatalogDb)
-	fullUrl, exists := storage.UrlCatalogDb[param]
-	log.Print(exists)
 
+	fullUrl, exists := storage.UrlCatalogDb[param]
 	if !exists {
 		return "", errors.New("Cant get URL")
 	}

@@ -10,8 +10,8 @@ func V1() *mux.Router {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", handlers.NewUrl).Methods("POST")
-	router.HandleFunc("/{id}", handlers.GetUrl).Methods("GET")
+	router.HandleFunc("/", handlers.NewURL).Methods("POST")
+	router.HandleFunc("/{id}", handlers.GetURL).Methods("GET")
 
 	return router
 }

@@ -10,7 +10,7 @@ import (
 	urlCatalog "github.com/n0byk/short_url_backend/httpapi/v1/storage/repositories"
 )
 
-func NewUrl(w http.ResponseWriter, r *http.Request) {
+func NewURL(w http.ResponseWriter, r *http.Request) {
 
 	urlBytes, err := ioutil.ReadAll(r.Body)
 
@@ -20,20 +20,20 @@ func NewUrl(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !helpers.ValidateUrl(string(urlBytes)) {
+	if !helpers.ValidateURL(string(urlBytes)) {
 		log.Print("Validate error - " + string(urlBytes))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	p := entities.AddElement{
-		ShortUrl: helpers.GenerateToken(7),
-		UrlBytes: urlBytes,
+		ShortURL: helpers.GenerateToken(7),
+		URLBytes: urlBytes,
 	}
 
 	urlCatalog.AddElement(p)
 	w.Header().Set("Content-Type", "application/text")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("http://localhost:8080/" + p.ShortUrl))
+	w.Write([]byte("http://localhost:8080/" + p.ShortURL))
 
 }

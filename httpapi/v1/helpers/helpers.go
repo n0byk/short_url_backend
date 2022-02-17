@@ -6,7 +6,7 @@ import (
 	"net/url"
 )
 
-func ValidateUrl(str string) bool {
+func ValidateURL(str string) bool {
 	u, err := url.Parse(str)
 	return err == nil && u.Scheme != "" && u.Host != ""
 }

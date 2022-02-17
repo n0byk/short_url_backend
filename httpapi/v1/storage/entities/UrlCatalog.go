@@ -1,6 +1,6 @@
 package entities
 
 type AddElement struct {
-	ShortUrl string
-	UrlBytes []byte
+	ShortURL string
+	URLBytes []byte
 }

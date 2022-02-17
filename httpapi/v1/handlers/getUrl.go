@@ -8,7 +8,7 @@ import (
 	urlCatalog "github.com/n0byk/short_url_backend/httpapi/v1/storage/repositories"
 )
 
-func GetUrl(w http.ResponseWriter, r *http.Request) {
+func GetURL(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	shortUrl := params["id"]
 
