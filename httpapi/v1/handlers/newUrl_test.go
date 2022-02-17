@@ -37,6 +37,8 @@ func TestNewUrl(t *testing.T) {
 			h.ServeHTTP(w, request)
 			res := w.Result()
 
+			defer res.Body.Close()
+
 			if res.StatusCode != tt.want.code {
 				t.Errorf("Expected status code %d, got %d", tt.want.code, w.Code)
 			}
