@@ -1,24 +1,28 @@
 package repositories
 
 import (
+	"errors"
 	"log"
 
-	Storage "github.com/n0byk/short_url_backend/httpapi/v1/storage"
-	Entities "github.com/n0byk/short_url_backend/httpapi/v1/storage/entities"
+	storage "github.com/n0byk/short_url_backend/httpapi/v1/storage"
+	entities "github.com/n0byk/short_url_backend/httpapi/v1/storage/entities"
 )
 
 type UrlCatalog interface {
 	AddElement()
-	GetElement()
+	GetElement() (string, error)
 }
 
-func AddElement(params Entities.AddElement) {
-	Storage.UrlCatalogDb[params.ShortUrl] = string(params.UrlBytes)
+func AddElement(params entities.AddElement) {
+	storage.UrlCatalogDb[params.ShortUrl] = string(params.UrlBytes)
 }
 
-func GetElement(param string) (string, bool) {
-	log.Print(Storage.UrlCatalogDb)
-	fullUrl, exists := Storage.UrlCatalogDb[param]
+func GetElement(param string) (string, error) {
+	log.Print(storage.UrlCatalogDb)
+	fullUrl, exists := storage.UrlCatalogDb[param]
+	if !exists {
+		return "", errors.New("Cant get URL")
+	}
 
-	return fullUrl, exists
+	return fullUrl, nil
 }
