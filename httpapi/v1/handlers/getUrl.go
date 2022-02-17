@@ -10,9 +10,9 @@ import (
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	shortUrl := params["id"]
+	shortURL := params["id"]
 
-	fullURL, err := urlCatalog.GetElement(shortUrl)
+	fullURL, err := urlCatalog.GetElement(shortURL)
 	if err == nil {
 
 		http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)

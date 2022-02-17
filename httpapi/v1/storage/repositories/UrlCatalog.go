@@ -8,7 +8,7 @@ import (
 	entities "github.com/n0byk/short_url_backend/httpapi/v1/storage/entities"
 )
 
-type UrlCatalog interface {
+type URLCatalog interface {
 	AddElement()
 	GetElement() (string, error)
 }
