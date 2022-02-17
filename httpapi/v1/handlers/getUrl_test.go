@@ -30,7 +30,7 @@ func TestGetUrl(t *testing.T) {
 			request := httptest.NewRequest(http.MethodGet, "http://localhost:8080/3e89ffb0-948a-4d2c-9308-e5d57569cf19", nil)
 
 			w := httptest.NewRecorder()
-			h := http.HandlerFunc(GetUrl)
+			h := http.HandlerFunc(GetURL)
 			h.ServeHTTP(w, request)
 			res := w.Result()
 			defer res.Body.Close()

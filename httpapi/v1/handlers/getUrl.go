@@ -12,13 +12,13 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	shortUrl := params["id"]
 
-	fullUrl, err := urlCatalog.GetElement(shortUrl)
+	fullURL, err := urlCatalog.GetElement(shortUrl)
 	if err == nil {
 
-		http.Redirect(w, r, fullUrl, http.StatusTemporaryRedirect)
+		http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 		return
 	}
-	log.Print("Cant get URL", err)
+	log.Print("Err ", err)
 	w.WriteHeader(http.StatusBadRequest)
 
 }

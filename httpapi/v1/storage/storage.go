@@ -1,3 +1,3 @@
 package storage
 
-var UrlCatalogDb = make(map[string]string)
+var URLCatalogDB = make(map[string]string)

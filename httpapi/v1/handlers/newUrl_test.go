@@ -33,7 +33,7 @@ func TestNewUrl(t *testing.T) {
 			request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(tt.want.url))
 
 			w := httptest.NewRecorder()
-			h := http.HandlerFunc(GetUrl)
+			h := http.HandlerFunc(GetURL)
 			h.ServeHTTP(w, request)
 			res := w.Result()
 
