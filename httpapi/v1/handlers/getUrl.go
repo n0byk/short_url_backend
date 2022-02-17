@@ -13,7 +13,8 @@ func GetUrl(w http.ResponseWriter, r *http.Request) {
 	shortUrl := params["id"]
 
 	fullUrl, err := urlCatalog.GetElement(shortUrl)
-	if err != nil {
+	if err == nil {
+
 		http.Redirect(w, r, fullUrl, http.StatusTemporaryRedirect)
 		return
 	}

@@ -14,5 +14,5 @@ func ValidateUrl(str string) bool {
 func GenerateToken(len int) string {
 	buff := make([]byte, len)
 	rand.Read(buff)
-	return base64.StdEncoding.EncodeToString(buff)[:len]
+	return base64.RawURLEncoding.EncodeToString(buff)[:len]
 }

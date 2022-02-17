@@ -20,6 +20,8 @@ func AddElement(params entities.AddElement) {
 func GetElement(param string) (string, error) {
 	log.Print(storage.UrlCatalogDb)
 	fullUrl, exists := storage.UrlCatalogDb[param]
+	log.Print(exists)
+
 	if !exists {
 		return "", errors.New("Cant get URL")
 	}
