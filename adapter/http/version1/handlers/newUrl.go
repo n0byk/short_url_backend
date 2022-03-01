@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/n0byk/short_url_backend/config"
+	config "github.com/n0byk/short_url_backend/config"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
+	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
 	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
 	helpers "github.com/n0byk/short_url_backend/helpers"
 )
@@ -30,11 +31,19 @@ func NewURL(w http.ResponseWriter, r *http.Request) {
 	token := helpers.GenerateToken(7)
 
 	var adapter mockdata.URLCatalog
+	if len(config.AppEnv().FileStoragePath) > 1 {
+		storage, err := filestorage.NewStorageSet(config.AppEnv().FileStoragePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer storage.CloseURlCatalog()
+		storage.WriteURL(&entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes)})
+	}
 
 	adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes)})
 
 	w.Header().Set("Content-Type", "application/text")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(config.AppEnv().BaseURL + token))
+	w.Write([]byte(config.AppEnv().BaseURL + "/" + token))
 
 }
