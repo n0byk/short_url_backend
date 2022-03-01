@@ -11,5 +11,5 @@ import (
 func main() {
 
 	log.Print("Started at port 8080")
-	log.Fatal(http.ListenAndServe(config.AppEnv().SERVER_ADDRESS, version1.V1()))
+	log.Fatal(http.ListenAndServe(config.AppEnv().ServerAddress, version1.V1()))
 }
