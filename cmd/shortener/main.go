@@ -10,6 +10,6 @@ import (
 
 func main() {
 
-	log.Print("Started at port 8080")
+	log.Print("Started at " + config.AppEnv().ServerAddress)
 	log.Fatal(http.ListenAndServe(config.AppEnv().ServerAddress, version1.V1()))
 }
