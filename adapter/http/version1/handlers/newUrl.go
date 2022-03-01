@@ -44,6 +44,6 @@ func NewURL(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/text")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(config.AppEnv().BaseURL + "/" + token))
+	w.Write([]byte(config.AppEnv().BaseURL + token))
 
 }
