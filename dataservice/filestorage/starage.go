@@ -26,7 +26,7 @@ func NewStorageSet(fileName string) (*storageSet, error) {
 func (p *storageSet) WriteURL(url *entities.URLCatalog) error {
 	return p.encoder.Encode(&url)
 }
-func (p *storageSet) CloseURlCatalog() error {
+func (p *storageSet) CloseURLCatalog() error {
 	return p.file.Close()
 }
 
@@ -52,7 +52,7 @@ func (c *storageGet) ReadURL() (*entities.URLCatalog, error) {
 	}
 	return url, nil
 }
-func (c *storageGet) CloseURlCatalog() error {
+func (c *storageGet) CloseURLCatalog() error {
 	return c.file.Close()
 }
 

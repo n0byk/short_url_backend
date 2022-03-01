@@ -36,11 +36,11 @@ func NewURL(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer storage.CloseURlCatalog()
+		defer storage.CloseURLCatalog()
 		storage.WriteURL(&entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes)})
+	} else {
+		adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes)})
 	}
-
-	adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes)})
 
 	w.Header().Set("Content-Type", "application/text")
 	w.WriteHeader(http.StatusCreated)
