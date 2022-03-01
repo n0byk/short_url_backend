@@ -39,7 +39,7 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes.URL)})
 
-	person := types.JSONResponse{Result: config.AppEnv().BaseURL + token}
+	person := types.JSONResponse{Result: config.AppEnv().BaseURL + "/" + token}
 
 	response, jsonError := json.Marshal(person)
 
