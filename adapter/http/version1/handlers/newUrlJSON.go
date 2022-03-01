@@ -12,7 +12,7 @@ import (
 )
 
 type props struct {
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 func NewURLJSON(w http.ResponseWriter, r *http.Request) {
@@ -26,8 +26,8 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !helpers.ValidateURL(string(urlBytes.Url)) {
-		log.Print("Validate error - " + string(urlBytes.Url))
+	if !helpers.ValidateURL(string(urlBytes.URL)) {
+		log.Print("Validate error - " + string(urlBytes.URL))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -36,7 +36,7 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	var adapter mockdata.URLCatalog
 
-	adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes.Url)})
+	adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes.URL)})
 
 	person := types.JSONResponse{Result: "http://localhost:8080/" + token}
 
