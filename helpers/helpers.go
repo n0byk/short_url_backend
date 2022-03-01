@@ -3,6 +3,7 @@ package helpers
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"net/http"
 	"net/url"
 )
 
@@ -15,4 +16,10 @@ func GenerateToken(len int) string {
 	buff := make([]byte, len)
 	rand.Read(buff)
 	return base64.RawURLEncoding.EncodeToString(buff)[:len]
+}
+
+func JSONResponse(w http.ResponseWriter, responce []byte, httpStatus int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatus)
+	w.Write(responce)
 }

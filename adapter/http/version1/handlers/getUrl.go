@@ -5,14 +5,16 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	urlCatalog "github.com/n0byk/short_url_backend/httpapi/v1/storage/repositories"
+	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
 )
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	shortURL := params["id"]
+	shortURL := params["url"]
 
-	fullURL, err := urlCatalog.GetElement(shortURL)
+	var adapter mockdata.URLCatalog
+
+	fullURL, err := adapter.GetElement(shortURL)
 	if err == nil {
 
 		http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
