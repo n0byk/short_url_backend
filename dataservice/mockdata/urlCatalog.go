@@ -16,8 +16,8 @@ func (f *URLCatalog) AddElement(props entities.URLCatalog) (string, error) {
 	return props.ShortURL, nil
 }
 
-func (f *URLCatalog) GetElement(shortUrl string) (string, error) {
-	fullURL, exists := urlCatalogDB[shortUrl]
+func (f *URLCatalog) GetElement(shortURL string) (string, error) {
+	fullURL, exists := urlCatalogDB[shortURL]
 	if !exists {
 		return "", errors.New("Cant_get_URL")
 	}
