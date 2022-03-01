@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/n0byk/short_url_backend/config"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
 	helpers "github.com/n0byk/short_url_backend/helpers"
@@ -34,6 +35,6 @@ func NewURL(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/text")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("http://localhost:8080/" + token))
+	w.Write([]byte(config.AppEnv().BASE_URL + token))
 
 }

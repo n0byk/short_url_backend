@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	types "github.com/n0byk/short_url_backend/adapter/http/version1/types"
+	"github.com/n0byk/short_url_backend/config"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
 	helpers "github.com/n0byk/short_url_backend/helpers"
@@ -38,7 +39,7 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes.URL)})
 
-	person := types.JSONResponse{Result: "http://localhost:8080/" + token}
+	person := types.JSONResponse{Result: config.AppEnv().BASE_URL + token}
 
 	response, jsonError := json.Marshal(person)
 
