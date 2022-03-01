@@ -1,7 +1,9 @@
 package filestorage
 
 import (
+	"bufio"
 	"encoding/json"
+	"errors"
 	"os"
 
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
@@ -45,13 +47,22 @@ func NewStorageGet(fileName string) (*storageGet, error) {
 		decoder: json.NewDecoder(file),
 	}, nil
 }
-func (c *storageGet) ReadURL() (*entities.URLCatalog, error) {
-	url := &entities.URLCatalog{}
-	if err := c.decoder.Decode(&url); err != nil {
-		return nil, err
+func (c *storageGet) GetURL(ShortURL string) (string, error) {
+
+	urls := bufio.NewScanner(c.file)
+
+	for urls.Scan() {
+		bytes := []byte(urls.Text())
+		var item entities.URLCatalog
+		err := json.Unmarshal(bytes, &item)
+		if err == nil && item.ShortURL == ShortURL {
+			return item.FullURL, nil
+		}
+
 	}
-	return url, nil
+	return "", errors.New("Cant_get_URL")
 }
+
 func (c *storageGet) CloseURLCatalog() error {
 	return c.file.Close()
 }
