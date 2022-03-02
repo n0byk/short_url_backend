@@ -14,8 +14,8 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	shortURL := params["url"]
 	var fullURL string
-	if len(*config.AppEnv().FileStoragePath) > 1 {
-		storage, err := filestorage.NewStorageGet(*config.AppEnv().FileStoragePath)
+	if len(config.AppEnv().FileStoragePath) > 1 {
+		storage, err := filestorage.NewStorageGet(config.AppEnv().FileStoragePath)
 		if err != nil {
 			log.Fatal(err)
 		}

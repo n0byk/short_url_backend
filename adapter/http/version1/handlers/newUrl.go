@@ -31,8 +31,8 @@ func NewURL(w http.ResponseWriter, r *http.Request) {
 	token := helpers.GenerateToken(7)
 
 	var adapter mockdata.URLCatalog
-	if len(*config.AppEnv().FileStoragePath) > 1 {
-		storage, err := filestorage.NewStorageSet(*config.AppEnv().FileStoragePath)
+	if len(config.AppEnv().FileStoragePath) > 1 {
+		storage, err := filestorage.NewStorageSet(config.AppEnv().FileStoragePath)
 		if err != nil {
 			log.Fatal(err)
 		}
