@@ -1,8 +1,8 @@
 package config
 
 import (
-	"errors"
 	"log"
+	"sync"
 
 	"flag"
 
@@ -15,25 +15,22 @@ type appConfig struct {
 	FileStoragePath string `env:"FILE_STORAGE_PATH"`
 }
 
-func AppEnv() appConfig {
-	var appEnv appConfig
+var once sync.Once
+var appEnv *appConfig
 
-	err := env.Parse(&appEnv)
-	if err != nil {
-		log.Fatal(err)
-	}
+func AppEnv() *appConfig {
+	once.Do(func() {
+		appEnv = &appConfig{}
+		flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
+		flag.StringVar(&appEnv.BaseURL, "b", "http://localhost:8080", "BASE_URL")
+		flag.StringVar(&appEnv.FileStoragePath, "f", "url_catalog.db", "FILE_STORAGE_PATH")
+		flag.Parse()
 
-	flag.StringVar(&appEnv.ServerAddress, "a", appEnv.ServerAddress, "SERVER_ADDRESS")
-	flag.StringVar(&appEnv.BaseURL, "b", appEnv.BaseURL, "BASE_URL")
-	flag.Func("f", "FILE_STORAGE_PATH", func(storagePath string) error {
-		if storagePath != "" {
-			appEnv.FileStoragePath = storagePath
-			return nil
+		if err := env.Parse(appEnv); err != nil {
+			log.Fatalf("Unset vars: %v", err)
 		}
-		appEnv.FileStoragePath = "url_catalog.db"
-		return errors.New("Can't_get_FILE_STORAGE_PATH")
-	})
 
-	flag.Parse()
+	})
 	return appEnv
+
 }

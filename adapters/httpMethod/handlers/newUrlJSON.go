@@ -10,7 +10,7 @@ import (
 	config "github.com/n0byk/short_url_backend/config"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
-	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
+	inMemory "github.com/n0byk/short_url_backend/dataservice/inMemory"
 	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
@@ -37,7 +37,7 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	token := helpers.GenerateToken(7)
 
-	var adapter mockdata.URLCatalog
+	var adapter inMemory.URLCatalog
 
 	if len(config.AppEnv().FileStoragePath) > 1 {
 		storage, err := filestorage.NewStorageSet(config.AppEnv().FileStoragePath)

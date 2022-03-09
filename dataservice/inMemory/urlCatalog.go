@@ -1,4 +1,4 @@
-package mockdata
+package inMemory
 
 import (
 	"errors"

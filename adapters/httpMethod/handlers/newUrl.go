@@ -9,7 +9,7 @@ import (
 	config "github.com/n0byk/short_url_backend/config"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
-	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
+	inMemory "github.com/n0byk/short_url_backend/dataservice/inMemory"
 	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
@@ -18,24 +18,27 @@ func NewURL(w http.ResponseWriter, r *http.Request) {
 	urlBytes, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
-		log.Print("ERR NewUrl - " + err.Error())
+		log.Println("ERR NewUrl - " + err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if !httpMethodHelpers.ValidateURL(string(urlBytes)) {
-		log.Print("Validate error - " + string(urlBytes))
+		log.Println("Validate error - " + string(urlBytes))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	token := helpers.GenerateToken(7)
 
-	var adapter mockdata.URLCatalog
+	var adapter inMemory.URLCatalog
+
 	if len(config.AppEnv().FileStoragePath) > 1 {
 		storage, err := filestorage.NewStorageSet(config.AppEnv().FileStoragePath)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("NewStorageGet: %v", err)
+			http.Error(w, "File Storage Error", http.StatusInternalServerError)
+			return
 		}
 		defer storage.CloseURLCatalog()
 		storage.WriteURL(&entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes)})
