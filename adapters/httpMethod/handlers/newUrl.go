@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	httpMethodHelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	config "github.com/n0byk/short_url_backend/config"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
@@ -22,7 +23,7 @@ func NewURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !helpers.ValidateURL(string(urlBytes)) {
+	if !httpMethodHelpers.ValidateURL(string(urlBytes)) {
 		log.Print("Validate error - " + string(urlBytes))
 		w.WriteHeader(http.StatusBadRequest)
 		return
