@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	types "github.com/n0byk/short_url_backend/adapter/http/version1/types"
-	"github.com/n0byk/short_url_backend/config"
+	httpMethodHelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
+	types "github.com/n0byk/short_url_backend/adapters/httpMethod/types"
+	config "github.com/n0byk/short_url_backend/config"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
 	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
@@ -28,7 +29,7 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !helpers.ValidateURL(string(urlBytes.URL)) {
+	if !httpMethodHelpers.ValidateURL(string(urlBytes.URL)) {
 		log.Print("Validate error - " + string(urlBytes.URL))
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -55,5 +56,5 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 	if jsonError != nil {
 		log.Print("Unable to encode JSON")
 	}
-	helpers.JSONResponse(w, response, http.StatusCreated)
+	httpMethodHelpers.JSONResponse(w, response, http.StatusCreated)
 }

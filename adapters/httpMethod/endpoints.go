@@ -3,10 +3,10 @@ package version1
 import (
 	"github.com/gorilla/mux"
 
-	handlers "github.com/n0byk/short_url_backend/adapter/http/version1/handlers"
+	handlers "github.com/n0byk/short_url_backend/adapters/httpMethod/handlers"
 )
 
-func V1() *mux.Router {
+func Routers() *mux.Router {
 
 	router := mux.NewRouter()
 
