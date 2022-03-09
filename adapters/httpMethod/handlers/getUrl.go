@@ -11,8 +11,8 @@ import (
 )
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	shortURL := params["url"]
+	params := mux.Vars(r)["url"]
+
 	var fullURL string
 	if len(config.AppEnv().FileStoragePath) > 1 {
 		storage, err := filestorage.NewStorageGet(config.AppEnv().FileStoragePath)
@@ -20,7 +20,7 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		defer storage.CloseURLCatalog()
-		fullURL, err = storage.GetURL(shortURL)
+		fullURL, err = storage.GetURL(params)
 		if err == nil {
 			http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 			return
@@ -30,7 +30,7 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var adapter mockdata.URLCatalog
 		var err error
-		fullURL, err = adapter.GetElement(shortURL)
+		fullURL, err = adapter.GetElement(params)
 		if err == nil {
 			http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 			return

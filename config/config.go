@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"log"
 
 	"flag"
 
@@ -14,12 +15,12 @@ type appConfig struct {
 	FileStoragePath string `env:"FILE_STORAGE_PATH"`
 }
 
-var appEnv appConfig
+func AppEnv() appConfig {
+	var appEnv appConfig
 
-func init() {
 	err := env.Parse(&appEnv)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	flag.StringVar(&appEnv.ServerAddress, "a", appEnv.ServerAddress, "SERVER_ADDRESS")
@@ -32,9 +33,7 @@ func init() {
 		appEnv.FileStoragePath = "url_catalog.db"
 		return errors.New("Can't_get_FILE_STORAGE_PATH")
 	})
-}
 
-func AppEnv() appConfig {
 	flag.Parse()
 	return appEnv
 }
