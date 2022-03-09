@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"sync"
 
@@ -30,7 +29,7 @@ func AppEnv() *appConfig {
 		if err := env.Parse(appEnv); err != nil {
 			log.Fatalf("Unset vars: %v", err)
 		}
-		fmt.Print(appEnv)
+
 	})
 	return appEnv
 
