@@ -7,11 +7,11 @@ import (
 	"github.com/gorilla/mux"
 	config "github.com/n0byk/short_url_backend/config"
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
-	mockdata "github.com/n0byk/short_url_backend/dataservice/mockdata"
+	inMemory "github.com/n0byk/short_url_backend/dataservice/inMemory"
 )
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)["url"]
+	shortURL := mux.Vars(r)["url"]
 
 	var fullURL string
 	if len(config.AppEnv().FileStoragePath) > 1 {
@@ -20,7 +20,7 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		defer storage.CloseURLCatalog()
-		fullURL, err = storage.GetURL(params)
+		fullURL, err = storage.GetURL(shortURL)
 		if err == nil {
 			http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 			return
@@ -28,9 +28,9 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 		log.Print("Err ", err)
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
-		var adapter mockdata.URLCatalog
+		var adapter inMemory.URLCatalog
 		var err error
-		fullURL, err = adapter.GetElement(params)
+		fullURL, err = adapter.GetElement(shortURL)
 		if err == nil {
 			http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 			return
