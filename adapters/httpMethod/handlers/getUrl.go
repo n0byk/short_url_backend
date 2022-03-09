@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	config "github.com/n0byk/short_url_backend/config"
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
-	inMemory "github.com/n0byk/short_url_backend/dataservice/inMemory"
+	memory "github.com/n0byk/short_url_backend/dataservice/memory"
 )
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +28,7 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 		log.Print("Err ", err)
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
-		var adapter inMemory.URLCatalog
+		var adapter memory.URLCatalog
 		var err error
 		fullURL, err = adapter.GetElement(shortURL)
 		if err == nil {

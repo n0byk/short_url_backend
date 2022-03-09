@@ -1,4 +1,4 @@
-package inMemory
+package memory
 
 import (
 	"errors"
