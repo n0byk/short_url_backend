@@ -1,36 +1,20 @@
 package config
 
 import (
-	"log"
-	"sync"
-
-	"flag"
-
-	"github.com/caarlos0/env"
+	dataservice "github.com/n0byk/short_url_backend/dataservice"
 )
 
-type appConfig struct {
+type AppConfig struct {
 	ServerAddress   string `env:"SERVER_ADDRESS"  envDefault:"localhost:8080"`
 	BaseURL         string `env:"BASE_URL" envDefault:"http://localhost:8080"`
 	FileStoragePath string `env:"FILE_STORAGE_PATH"`
+	Db              string `env:"DATABASE_CONNECTION_STRING"`
 }
 
-var once sync.Once
-var appEnv *appConfig
-
-func AppEnv() *appConfig {
-	once.Do(func() {
-		appEnv = &appConfig{}
-		flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
-		flag.StringVar(&appEnv.BaseURL, "b", "http://localhost:8080", "BASE_URL")
-		flag.StringVar(&appEnv.FileStoragePath, "f", "url_catalog.db", "FILE_STORAGE_PATH")
-		flag.Parse()
-
-		if err := env.Parse(appEnv); err != nil {
-			log.Fatalf("Unset vars: %v", err)
-		}
-
-	})
-	return appEnv
-
+type Service struct {
+	ShortLinkLen int
+	BaseURL      string
+	Storage      dataservice.Repository
 }
+
+var AppService Service
