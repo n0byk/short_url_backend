@@ -23,7 +23,7 @@ func init() {
 	flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
 	flag.StringVar(&appEnv.BaseURL, "b", "http://localhost:8080", "BASE_URL")
 	flag.StringVar(&appEnv.FileStoragePath, "f", "", "FILE_STORAGE_PATH")
-	flag.StringVar(&appEnv.Db, "d", "", "DATABASE_CONNECTION_STRING")
+	flag.StringVar(&appEnv.DB, "d", "", "DATABASE_CONNECTION_STRING")
 	flag.Parse()
 
 	if err := env.Parse(&appEnv); err != nil {
@@ -44,7 +44,7 @@ func main() {
 		storage = filestorage.NewFileRepository(f)
 	}
 
-	if appEnv.Db != "" {
+	if appEnv.DB != "" {
 		db, err := sql.Open("postgres", "")
 		if err != nil {
 			log.Fatal(err)
@@ -53,7 +53,7 @@ func main() {
 		storage = postgresql.NewDbRepository(db)
 	}
 
-	if appEnv.Db == "" && appEnv.FileStoragePath == "" {
+	if appEnv.DB == "" && appEnv.FileStoragePath == "" {
 
 		storage = memory.NewMemoryRepository()
 

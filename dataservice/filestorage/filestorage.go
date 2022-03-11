@@ -27,7 +27,7 @@ func (f *fileRepository) AddURL(key, url string) error {
 
 	if err != nil {
 		log.Println(err)
-		return errors.New("filestorage: some troubles while adding new url.")
+		return errors.New("filestorage: some troubles while adding new url")
 	}
 	f.f.Truncate(0)
 	f.f.Write(jsonData)

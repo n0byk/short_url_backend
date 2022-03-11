@@ -20,7 +20,7 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 	return "", nil
 }
 
-func NewDbRepository(db *sql.DB) dataservice.Repository {
+func NewDBRepository(db *sql.DB) dataservice.Repository {
 	return &dbRepository{
 		db: db,
 	}
