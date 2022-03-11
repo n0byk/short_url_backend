@@ -50,7 +50,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		storage = postgresql.NewDbRepository(db)
+		storage = postgresql.NewDBRepository(db)
 	}
 
 	if appEnv.DB == "" && appEnv.FileStoragePath == "" {
