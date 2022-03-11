@@ -8,9 +8,6 @@ import (
 	httpMethodHelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	types "github.com/n0byk/short_url_backend/adapters/httpMethod/types"
 	config "github.com/n0byk/short_url_backend/config"
-	entities "github.com/n0byk/short_url_backend/dataservice/entities"
-	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
-	inMemory "github.com/n0byk/short_url_backend/dataservice/inMemory"
 	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
@@ -18,7 +15,7 @@ type props struct {
 	URL string `json:"url"`
 }
 
-func NewURLJSON(w http.ResponseWriter, r *http.Request) {
+func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	var urlBytes props
 
@@ -35,22 +32,11 @@ func NewURLJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := helpers.GenerateToken(7)
+	token := helpers.GenerateToken(config.AppService.ShortLinkLen)
 
-	var adapter inMemory.URLCatalog
+	config.AppService.Storage.AddURL(token, string(urlBytes.URL))
 
-	if len(config.AppEnv().FileStoragePath) > 1 {
-		storage, err := filestorage.NewStorageSet(config.AppEnv().FileStoragePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer storage.CloseURLCatalog()
-		storage.WriteURL(&entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes.URL)})
-	} else {
-		adapter.AddElement(entities.URLCatalog{ShortURL: token, FullURL: string(urlBytes.URL)})
-	}
-
-	person := types.JSONResponse{Result: config.AppEnv().BaseURL + "/" + token}
+	person := types.JSONResponse{Result: config.AppService.BaseURL + "/" + token}
 	response, jsonError := json.Marshal(person)
 
 	if jsonError != nil {

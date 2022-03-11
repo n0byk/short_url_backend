@@ -10,9 +10,9 @@ func Routers() *mux.Router {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", handlers.NewURL).Methods("POST")
+	router.HandleFunc("/", handlers.AddURLHandler).Methods("POST")
 	router.HandleFunc("/{url}", handlers.GetURL).Methods("GET")
-	router.HandleFunc("/api/shorten", handlers.NewURLJSON).Methods("POST")
+	router.HandleFunc("/api/shorten", handlers.AddURLJSON).Methods("POST")
 
 	return router
 }
