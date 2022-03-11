@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGetURL(t *testing.T) {
+func TestAddURLJSON(t *testing.T) {
 	type args struct {
 		w http.ResponseWriter
 		r *http.Request
@@ -18,7 +18,7 @@ func TestGetURL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			GetURL(tt.args.w, tt.args.r)
+			AddURLJSON(tt.args.w, tt.args.r)
 		})
 	}
 }
