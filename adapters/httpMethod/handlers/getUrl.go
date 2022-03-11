@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,6 +13,7 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 	shortURL := mux.Vars(r)["url"]
 	var fullURL string
 	fullURL, err := config.AppService.Storage.GetURL(shortURL)
+	fmt.Println("full : " + fullURL)
 	if err == nil {
 		http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 		return
