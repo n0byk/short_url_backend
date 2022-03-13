@@ -45,7 +45,7 @@ func Gzip(next http.Handler) http.Handler {
 
 		gz.Reset(w)
 		defer gz.Close()
-
+		w.Header().Set("Content-Encoding", "gzip")
 		next.ServeHTTP(&gzipResponseWriter{ResponseWriter: w, Writer: gz}, r)
 	})
 }
@@ -57,12 +57,12 @@ func ReadBodyBytes(r *http.Request) ([]byte, error) {
 		return nil, readErr
 	}
 	defer r.Body.Close()
-
-	if len(r.Header["Content-Encoding"]) > 0 && r.Header["Content-Encoding"][0] == "gzip" {
+	if r.Header.Get("Content-Encoding") == "gzip" || r.Header.Get("Content-Encoding") == "application/gzip" {
 		r, gzErr := gzip.NewReader(ioutil.NopCloser(bytes.NewBuffer(bodyBytes)))
 		if gzErr != nil {
 			return nil, gzErr
 		}
+
 		defer r.Close()
 
 		bb, err2 := ioutil.ReadAll(r)

@@ -14,6 +14,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	url, err := httpMethodHelpers.ReadBodyBytes(r)
 
 	if err != nil {
+		log.Println("Error while getting body - ")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -32,13 +33,13 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	var data []byte = []byte(config.AppService.BaseURL + "/" + token)
+	var data = []byte(config.AppService.BaseURL + "/" + token)
 
 	if r.Header.Get("Accept-Encoding") == "gzip" {
 		data, _ = httpMethodHelpers.Compress(data)
 		w.Header().Set("Content-Encoding", "gzip")
 	} else {
-		w.Header().Set("Content-Type", "application/text")
+		w.Header().Set("Content-Type", "application/text; charset=utf-8")
 	}
 
 	w.WriteHeader(http.StatusCreated)
