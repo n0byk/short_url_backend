@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -12,35 +10,37 @@ import (
 )
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
-	urlBytes, err := ioutil.ReadAll(r.Body)
-	fmt.Print(string(urlBytes))
+
+	url, err := httpMethodHelpers.ReadBodyBytes(r)
+
 	if err != nil {
-		log.Println("ERR NewUrl - " + err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if !httpMethodHelpers.ValidateURL(string(urlBytes)) {
-		log.Println("Validate error - " + string(urlBytes))
+	if !httpMethodHelpers.ValidateURL(string(url)) {
+		log.Println("Validate error - " + string(url))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	token := helpers.GenerateToken(config.AppService.ShortLinkLen)
 
-	err = config.AppService.Storage.AddURL(token, string(urlBytes))
+	err = config.AppService.Storage.AddURL(token, string(url))
 	if err != nil {
 		log.Println("Some error while adding new URL")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	data, _ := httpMethodHelpers.Compress([]byte(config.AppService.BaseURL + "/" + token))
-	fmt.Println(data)
+	var data []byte = []byte(config.AppService.BaseURL + "/" + token)
 
-	// w.Header().Set("Content-Type", "application/text")
-	w.Header().Set("Content-Encoding", "gzip")
-	r.Header.Add("Accept-Encoding", "gzip")
+	if r.Header.Get("Accept-Encoding") == "gzip" {
+		data, _ = httpMethodHelpers.Compress(data)
+		w.Header().Set("Content-Encoding", "gzip")
+	} else {
+		w.Header().Set("Content-Type", "application/text")
+	}
+
 	w.WriteHeader(http.StatusCreated)
-
 	w.Write(data)
 }
