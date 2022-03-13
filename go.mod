@@ -5,6 +5,7 @@ go 1.17
 require github.com/gorilla/mux v1.8.0
 
 require (
+	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/caarlos0/env v3.5.0+incompatible // indirect
 	github.com/caarlos0/env/v6 v6.9.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
