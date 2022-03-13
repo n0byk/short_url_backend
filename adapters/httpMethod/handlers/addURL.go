@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -12,7 +11,7 @@ import (
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
 
 	if err != nil {
 		log.Println("Error while getting body - ")
