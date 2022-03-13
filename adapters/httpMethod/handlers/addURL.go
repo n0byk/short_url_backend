@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	urlBytes, err := ioutil.ReadAll(r.Body)
-
+	fmt.Print(string(urlBytes))
 	if err != nil {
 		log.Println("ERR NewUrl - " + err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -33,8 +34,13 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	data, _ := httpMethodHelpers.Compress([]byte(config.AppService.BaseURL + "/" + token))
+	fmt.Println(data)
 
-	w.Header().Set("Content-Type", "application/text")
+	// w.Header().Set("Content-Type", "application/text")
+	w.Header().Set("Content-Encoding", "gzip")
+	r.Header.Add("Accept-Encoding", "gzip")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(config.AppService.BaseURL + "/" + token))
+
+	w.Write(data)
 }

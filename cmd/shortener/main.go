@@ -10,6 +10,7 @@ import (
 	"github.com/caarlos0/env"
 
 	httpMethod "github.com/n0byk/short_url_backend/adapters/httpMethod"
+	"github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	config "github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
@@ -62,5 +63,6 @@ func main() {
 	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage}
 
 	log.Print("Started at " + appEnv.ServerAddress)
-	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethod.Routers()))
+	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, helpers.GzipHandler(httpMethod.Routers())))
+
 }
