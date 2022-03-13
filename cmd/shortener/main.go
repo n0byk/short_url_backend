@@ -25,7 +25,6 @@ func init() {
 	flag.StringVar(&appEnv.BaseURL, "b", "http://localhost:8080", "BASE_URL")
 	flag.StringVar(&appEnv.FileStoragePath, "f", "", "FILE_STORAGE_PATH")
 	flag.StringVar(&appEnv.DB, "d", "", "DATABASE_CONNECTION_STRING")
-	flag.Parse()
 
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
@@ -33,7 +32,7 @@ func init() {
 }
 
 func main() {
-
+	flag.Parse()
 	var storage dataservice.Repository
 
 	if appEnv.FileStoragePath != "" {
