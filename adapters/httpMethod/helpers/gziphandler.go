@@ -56,14 +56,19 @@ func ReadBodyBytes(r *http.Request) ([]byte, error) {
 		return nil, readErr
 	}
 	defer r.Body.Close()
-	fmt.Println(r.Header.Get("Content-Encoding") == "gzip")
 	if r.Header.Get("Content-Encoding") == "gzip" {
+
 		r, gzErr := gzip.NewReader(bytes.NewReader(bodyBytes))
 		if gzErr != nil {
 			return nil, gzErr
 		}
 
 		defer r.Close()
+
+		rdata := bytes.NewReader(bodyBytes)
+		t, _ := gzip.NewReader(rdata)
+		s, _ := ioutil.ReadAll(t)
+		fmt.Println(string(s))
 
 		bb, err2 := ioutil.ReadAll(r)
 		if err2 != nil {
