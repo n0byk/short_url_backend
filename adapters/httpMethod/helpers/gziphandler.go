@@ -40,6 +40,7 @@ func Gzip(next http.Handler) http.Handler {
 			return
 
 		}
+
 		gz := gzPool.Get().(*gzip.Writer)
 		defer gzPool.Put(gz)
 		gz.Reset(w)
@@ -68,7 +69,7 @@ func ReadBodyBytes(r *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(bodyBytes)
+	fmt.Println("new url " + string(bodyBytes))
 	return bodyBytes, nil
 
 }
