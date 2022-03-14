@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -11,7 +12,7 @@ import (
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 
-	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
+	bodyBytes, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
 		log.Println("Error while getting body - ")
@@ -35,12 +36,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var data = []byte(config.AppService.BaseURL + "/" + token)
 
-	if r.Header.Get("Accept-Encoding") == "gzip" {
-		data, _ = httpMethodHelpers.Compress(data)
-		w.Header().Set("Content-Encoding", "gzip")
-	} else {
-		w.Header().Set("Content-Type", "application/text; charset=utf-8")
-	}
+	w.Header().Set("Content-Type", "application/text; charset=utf-8")
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(data)
