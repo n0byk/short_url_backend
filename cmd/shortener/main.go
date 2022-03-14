@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/caarlos0/env"
+	"github.com/gowww/compress"
 
 	httpMethod "github.com/n0byk/short_url_backend/adapters/httpMethod"
 	config "github.com/n0byk/short_url_backend/config"
@@ -62,6 +63,6 @@ func main() {
 
 	log.Print("Started at " + appEnv.ServerAddress)
 	// log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethodhelpers.Gzip(httpMethod.Routers())))
-	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethod.Routers()))
+	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, compress.Handle(httpMethod.Routers())))
 
 }
