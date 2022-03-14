@@ -18,8 +18,13 @@ type props struct {
 func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	var urlBytes props
-
-	err := json.NewDecoder(r.Body).Decode(&urlBytes)
+	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
+	if err != nil {
+		log.Println("Error while getting body - ")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = json.Unmarshal(bodyBytes, &urlBytes)
 	if err != nil {
 		log.Print("ERR NewUrl - " + err.Error())
 		w.WriteHeader(http.StatusInternalServerError)

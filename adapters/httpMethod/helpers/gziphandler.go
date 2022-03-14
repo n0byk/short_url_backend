@@ -37,11 +37,9 @@ func Gzip(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 			next.ServeHTTP(w, r)
-			fmt.Println("row")
 			return
 
 		}
-		fmt.Println("gzip")
 		gz := gzPool.Get().(*gzip.Writer)
 		defer gzPool.Put(gz)
 		gz.Reset(w)
