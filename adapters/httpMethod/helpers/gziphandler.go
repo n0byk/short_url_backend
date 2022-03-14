@@ -37,9 +37,11 @@ func Gzip(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 			next.ServeHTTP(w, r)
+			fmt.Println("row")
 			return
-		}
 
+		}
+		fmt.Println("gzip")
 		gz := gzPool.Get().(*gzip.Writer)
 		defer gzPool.Put(gz)
 		gz.Reset(w)
@@ -51,34 +53,26 @@ func Gzip(next http.Handler) http.Handler {
 
 func ReadBodyBytes(r *http.Request) ([]byte, error) {
 
-	bodyBytes, readErr := ioutil.ReadAll(r.Body)
-	if readErr != nil {
-		return nil, readErr
-	}
-	defer r.Body.Close()
-	if r.Header.Get("Content-Encoding") == "gzip" {
+	var reader io.Reader
 
-		r, gzErr := gzip.NewReader(bytes.NewReader(bodyBytes))
-		if gzErr != nil {
-			return nil, gzErr
+	if r.Header.Get("Content-Encoding") == "gzip" || r.Header.Get("Content-Encoding") == "application/gzip" {
+		gz, err := gzip.NewReader(r.Body)
+		if err != nil {
+			return nil, err
 		}
-
-		defer r.Close()
-
-		rdata := bytes.NewReader(bodyBytes)
-		t, _ := gzip.NewReader(rdata)
-		s, _ := ioutil.ReadAll(t)
-		fmt.Println(string(s))
-
-		bb, err2 := ioutil.ReadAll(r)
-		if err2 != nil {
-			return nil, err2
-		}
-		fmt.Println(bodyBytes)
-		return bb, nil
+		reader = gz
+		defer gz.Close()
 	} else {
-		return bodyBytes, nil
+		reader = r.Body
 	}
+
+	bodyBytes, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(bodyBytes)
+	return bodyBytes, nil
+
 }
 
 func Compress(data []byte) ([]byte, error) {
