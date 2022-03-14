@@ -62,6 +62,7 @@ func main() {
 	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage}
 
 	log.Print("Started at " + appEnv.ServerAddress)
+	// log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethodhelpers.Gzip(httpMethod.Routers())))
 	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethodhelpers.Gzip(httpMethod.Routers())))
 
 }
