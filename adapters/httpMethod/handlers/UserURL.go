@@ -11,7 +11,7 @@ import (
 )
 
 func UserURL(w http.ResponseWriter, r *http.Request) {
-	httpMethodHelpers.SetCookie(w, r)
+	// httpMethodHelpers.SetCookie(w, r)
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
