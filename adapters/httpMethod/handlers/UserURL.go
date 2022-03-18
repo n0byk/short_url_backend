@@ -12,15 +12,15 @@ import (
 
 func UserURL(w http.ResponseWriter, r *http.Request) {
 
-	user_id, err := r.Cookie("user_id")
+	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println(user_id.Value)
-	data, err := config.AppService.Storage.GetUserData(user_id.Value)
+	fmt.Println(userID.Value)
+	data, err := config.AppService.Storage.GetUserData(userID.Value)
 	if err != nil {
 		log.Println("Err ", err)
 		w.WriteHeader(http.StatusNoContent)

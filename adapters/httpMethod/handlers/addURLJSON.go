@@ -24,6 +24,14 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	userID, err := r.Cookie("user_id")
+	if err != nil {
+		log.Println("Can't get user_id ")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	err = json.Unmarshal(bodyBytes, &urlBytes)
 	if err != nil {
 		log.Print("ERR NewUrl - " + err.Error())
@@ -40,6 +48,8 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 	token := helpers.GenerateToken(config.AppService.ShortLinkLen)
 
 	config.AppService.Storage.AddURL(token, string(urlBytes.URL))
+
+	config.AppService.Storage.SetUserData(string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
 
 	person := types.JSONResponse{Result: config.AppService.BaseURL + "/" + token}
 	response, jsonError := json.Marshal(person)
