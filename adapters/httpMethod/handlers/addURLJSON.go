@@ -24,7 +24,7 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	httpMethodHelpers.SetCookie(w, r)
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
