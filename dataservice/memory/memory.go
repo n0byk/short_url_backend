@@ -4,17 +4,38 @@ import (
 	"errors"
 
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
+	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 )
 
-type memoryRepository struct{ db map[string]string }
+type memoryRepository struct {
+	urlsDB   map[string]string
+	userData map[string][]entities.URLCatalog
+}
 
 func (m *memoryRepository) AddURL(key, url string) error {
-	m.db[key] = url
+	m.urlsDB[key] = url
 	return nil
 }
 
+func (m *memoryRepository) SetUserData(key, url, user string) error {
+
+	m.userData[user] = append(m.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})
+
+	return nil
+}
+
+func (m *memoryRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
+
+	data, exists := m.userData[user]
+	if !exists {
+		return nil, errors.New("Cant_get_user_info")
+	}
+
+	return data, nil
+}
+
 func (m *memoryRepository) GetURL(key string) (string, error) {
-	fullURL, exists := m.db[key]
+	fullURL, exists := m.urlsDB[key]
 	if !exists {
 		return "", errors.New("Cant_get_URL")
 	}
@@ -23,5 +44,5 @@ func (m *memoryRepository) GetURL(key string) (string, error) {
 }
 
 func NewMemoryRepository() dataservice.Repository {
-	return &memoryRepository{db: make(map[string]string)}
+	return &memoryRepository{urlsDB: make(map[string]string), userData: make(map[string][]entities.URLCatalog)}
 }

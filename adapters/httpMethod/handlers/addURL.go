@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -19,6 +20,13 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user_id, err := r.Cookie("user_id")
+	if err != nil {
+		log.Println("Can't get user_id ")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	if !httpMethodHelpers.ValidateURL(string(bodyBytes)) {
 		log.Println("Validate error - " + string(bodyBytes))
 		w.WriteHeader(http.StatusBadRequest)
@@ -34,6 +42,8 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var data = []byte(config.AppService.BaseURL + "/" + token)
+	fmt.Println(user_id.Value)
+	config.AppService.Storage.SetUserData(string(bodyBytes), string(data), user_id.Value)
 
 	w.Header().Set("Content-Type", "application/text; charset=utf-8")
 
