@@ -28,7 +28,7 @@ func (m *memoryRepository) GetUserData(user string) ([]entities.URLCatalog, erro
 
 	data, exists := m.userData[user]
 	if !exists {
-		return nil, errors.New("Cant_get_user_info")
+		return []entities.URLCatalog{}, errors.New("Cant_get_user_info")
 	}
 
 	return data, nil

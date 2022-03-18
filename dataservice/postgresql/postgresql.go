@@ -24,7 +24,7 @@ func (f *dbRepository) SetUserData(key, url, user string) error {
 
 func (m *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
 
-	return nil, nil
+	return []entities.URLCatalog{}, nil
 }
 
 func (db *dbRepository) GetURL(key string) (string, error) {
