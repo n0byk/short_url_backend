@@ -47,7 +47,7 @@ func (f *fileRepository) SetUserData(key, url, user string) error {
 	return nil
 }
 
-func (m *fileRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
+func (f *fileRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
 
 	data, exists := m.userData[user]
 	if !exists {

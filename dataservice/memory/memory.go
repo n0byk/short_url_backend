@@ -17,7 +17,7 @@ func (m *memoryRepository) AddURL(key, url string) error {
 	return nil
 }
 
-func (f *memoryRepository) DBPing() error {
+func (m *memoryRepository) DBPing() error {
 	return nil
 }
 

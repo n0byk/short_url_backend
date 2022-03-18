@@ -17,17 +17,17 @@ func (db *dbRepository) AddURL(key, url string) error {
 	return nil
 }
 
-func (f *dbRepository) SetUserData(key, url, user string) error {
+func (db *dbRepository) SetUserData(key, url, user string) error {
 
 	//some implementation
 	return nil
 }
 
-func (f *dbRepository) DBPing() error {
+func (db *dbRepository) DBPing() error {
 	return f.db.Ping(context.Background())
 }
 
-func (m *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
+func (db *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
 
 	return []entities.URLCatalog{}, nil
 }
