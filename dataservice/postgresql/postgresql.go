@@ -24,7 +24,7 @@ func (db *dbRepository) SetUserData(key, url, user string) error {
 }
 
 func (db *dbRepository) DBPing() error {
-	return f.db.Ping(context.Background())
+	return db.db.Ping(context.Background())
 }
 
 func (db *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) {

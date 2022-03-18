@@ -49,7 +49,7 @@ func (f *fileRepository) SetUserData(key, url, user string) error {
 
 func (f *fileRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
 
-	data, exists := m.userData[user]
+	data, exists := f.userData[user]
 	if !exists {
 		return []entities.URLCatalog{}, errors.New("Cant_get_user_info")
 	}
