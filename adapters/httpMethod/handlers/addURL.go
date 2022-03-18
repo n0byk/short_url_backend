@@ -19,8 +19,6 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpMethodHelpers.SetCookie(w, r)
-
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
@@ -45,7 +43,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	var data = []byte(config.AppService.BaseURL + "/" + token)
 	config.AppService.Storage.SetUserData(string(bodyBytes), string(data), userID.Value)
 
-	// w.Header().Set("Content-Type", "application/text; charset=utf-8")
+	w.Header().Set("Content-Type", "application/text; charset=utf-8")
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(data)

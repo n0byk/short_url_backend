@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -22,6 +23,7 @@ func ValidateURL(str string) bool {
 func SetCookie(w http.ResponseWriter, r *http.Request) {
 	cookie, _ := r.Cookie("user_id")
 	if len(cookie.Value) == 0 {
+		fmt.Println("new cookie")
 		ck := http.Cookie{
 			Name:    "user_id",
 			Path:    "/",
