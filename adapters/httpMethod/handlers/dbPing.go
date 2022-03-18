@@ -11,7 +11,7 @@ func DBPing(w http.ResponseWriter, r *http.Request) {
 	err := config.AppService.Storage.DBPing()
 	if err != nil {
 		log.Println("Can't DBPing")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
