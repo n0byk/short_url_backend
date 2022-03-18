@@ -19,14 +19,14 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpMethodHelpers.SetCookie(w, r)
+	// httpMethodHelpers.SetCookie(w, r)
 
-	userID, err := r.Cookie("user_id")
-	if err != nil {
-		log.Println("Can't get user_id ")
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	// userID, err := r.Cookie("user_id")
+	// if err != nil {
+	// 	log.Println("Can't get user_id ")
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
 
 	if !httpMethodHelpers.ValidateURL(string(bodyBytes)) {
 		log.Println("Validate error - " + string(bodyBytes))
@@ -43,7 +43,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var data = []byte(config.AppService.BaseURL + "/" + token)
-	config.AppService.Storage.SetUserData(string(bodyBytes), string(data), userID.Value)
+	// config.AppService.Storage.SetUserData(string(bodyBytes), string(data), userID.Value)
 
 	w.Header().Set("Content-Type", "application/text; charset=utf-8")
 
