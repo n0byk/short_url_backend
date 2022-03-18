@@ -17,6 +17,10 @@ func (m *memoryRepository) AddURL(key, url string) error {
 	return nil
 }
 
+func (f *memoryRepository) DBPing() error {
+	return nil
+}
+
 func (m *memoryRepository) SetUserData(key, url, user string) error {
 
 	m.userData[user] = append(m.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})

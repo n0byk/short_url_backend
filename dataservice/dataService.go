@@ -7,4 +7,5 @@ type Repository interface {
 	GetURL(key string) (string, error)
 	SetUserData(key, url, user string) error
 	GetUserData(user string) ([]entities.URLCatalog, error)
+	DBPing() error
 }

@@ -36,6 +36,10 @@ func (f *fileRepository) AddURL(key, url string) error {
 	return nil
 }
 
+func (f *fileRepository) DBPing() error {
+	return nil
+}
+
 func (f *fileRepository) SetUserData(key, url, user string) error {
 
 	f.userData[user] = append(f.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})

@@ -1,14 +1,15 @@
 package postgresql
 
 import (
-	"database/sql"
+	"context"
 
+	"github.com/jackc/pgx/v4"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
 )
 
 type dbRepository struct {
-	db *sql.DB
+	db *pgx.Conn
 }
 
 func (db *dbRepository) AddURL(key, url string) error {
@@ -22,6 +23,10 @@ func (f *dbRepository) SetUserData(key, url, user string) error {
 	return nil
 }
 
+func (f *dbRepository) DBPing() error {
+	return f.db.Ping(context.Background())
+}
+
 func (m *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
 
 	return []entities.URLCatalog{}, nil
@@ -32,7 +37,7 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 	return "", nil
 }
 
-func NewDBRepository(db *sql.DB) dataservice.Repository {
+func NewDBRepository(db *pgx.Conn) dataservice.Repository {
 	return &dbRepository{
 		db: db,
 	}
