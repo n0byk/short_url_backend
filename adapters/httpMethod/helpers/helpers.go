@@ -20,8 +20,8 @@ func ValidateURL(str string) bool {
 }
 
 func SetCookie(w http.ResponseWriter, r *http.Request) {
-	_, err := r.Cookie("user_id")
-	if err != nil {
+	cookie, _ := r.Cookie("user_id")
+	if len(cookie.Value) == 0 {
 		ck := http.Cookie{
 			Name:    "user_id",
 			Path:    "/",
