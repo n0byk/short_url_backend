@@ -9,19 +9,19 @@ import (
 
 func Cookie(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// _, err := r.Cookie("user_id")
+		ck, err := r.Cookie("user_id")
 
-		// if err != nil {
+		if err != nil {
 
-		ck := http.Cookie{
-			Name:    "user_id",
-			Path:    "/",
-			Expires: time.Now().AddDate(1, 0, 0), //1 год
-			Value:   helpers.GenerateToken(8),
+			ck = &http.Cookie{
+				Name:    "user_id",
+				Path:    "/",
+				Expires: time.Now().AddDate(1, 0, 0), //1 год
+				Value:   helpers.GenerateToken(8),
+			}
+
+			http.SetCookie(w, ck)
 		}
-
-		http.SetCookie(w, &ck)
-		// }
 
 		next.ServeHTTP(w, r)
 	})
