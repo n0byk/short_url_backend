@@ -14,7 +14,9 @@ require (
 	github.com/jackc/pgtype v1.10.0 // indirect
 	github.com/jackc/pgx/v4 v4.15.0 // indirect
 	github.com/lib/pq v1.10.4 // indirect
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pressly/goose v2.7.0+incompatible // indirect
+	golang.org/x/crypto v0.0.0-20220210151621-f4118a5b28e2 // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
 
@@ -24,6 +26,7 @@ require (
 	github.com/caarlos0/env/v6 v6.9.1 // indirect
 	github.com/gowww/compress v1.0.0
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/pressly/goose/v3 v3.5.3
 	github.com/spf13/cobra v1.3.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 )

@@ -12,13 +12,13 @@ type memoryRepository struct {
 	userData map[string][]entities.URLCatalog
 }
 
-func (m *memoryRepository) AddURL(key, url string) error {
+func (m *memoryRepository) AddURL(key, url, user string) error {
 	m.urlsDB[key] = url
 	return nil
 }
 
 func (m *memoryRepository) DBPing() error {
-	return nil
+	return errors.New("Only for Postgresql")
 }
 
 func (m *memoryRepository) SetUserData(key, url, user string) error {

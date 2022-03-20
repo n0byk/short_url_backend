@@ -34,7 +34,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := helpers.GenerateToken(config.AppService.ShortLinkLen)
 
-	err = config.AppService.Storage.AddURL(token, string(bodyBytes))
+	err = config.AppService.Storage.AddURL(token, string(bodyBytes), userID.Value)
 	if err != nil {
 		log.Println("Some error while adding new URL")
 		w.WriteHeader(http.StatusInternalServerError)

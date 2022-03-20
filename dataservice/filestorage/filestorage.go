@@ -17,7 +17,7 @@ type fileRepository struct {
 	userData map[string][]entities.URLCatalog
 }
 
-func (f *fileRepository) AddURL(key, url string) error {
+func (f *fileRepository) AddURL(key, url, user string) error {
 	if len(f.urlsDB) == 0 {
 		byteValue, _ := ioutil.ReadAll(f.f)
 		json.Unmarshal([]byte(byteValue), &f.urlsDB)
@@ -37,7 +37,7 @@ func (f *fileRepository) AddURL(key, url string) error {
 }
 
 func (f *fileRepository) DBPing() error {
-	return nil
+	return errors.New("Only for Postgresql")
 }
 
 func (f *fileRepository) SetUserData(key, url, user string) error {

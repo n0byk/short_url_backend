@@ -22,9 +22,7 @@ func SetCookie(w http.ResponseWriter, r *http.Request) {
 	cookie, _ := r.Cookie("user_id")
 	if len(cookie.Value) == 0 {
 
-		ck := http.Cookie{Name: "user_id", Value: helpers.GenerateToken(8), HttpOnly: false}
-
-		http.SetCookie(w, &ck)
+		http.SetCookie(w, &http.Cookie{Name: "user_id", Value: helpers.GenerateToken(8), HttpOnly: false})
 	}
 
 }

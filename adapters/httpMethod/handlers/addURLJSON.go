@@ -47,7 +47,7 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	token := helpers.GenerateToken(config.AppService.ShortLinkLen)
 
-	config.AppService.Storage.AddURL(token, string(urlBytes.URL))
+	config.AppService.Storage.AddURL(token, string(urlBytes.URL), userID.Value)
 
 	config.AppService.Storage.SetUserData(string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
 

@@ -18,6 +18,8 @@ import (
 	filestorage "github.com/n0byk/short_url_backend/dataservice/filestorage"
 	memory "github.com/n0byk/short_url_backend/dataservice/memory"
 	postgresql "github.com/n0byk/short_url_backend/dataservice/postgresql"
+	migrations "github.com/n0byk/short_url_backend/dataservice/postgresql/migrations"
+	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
 var appEnv config.AppConfig
@@ -31,6 +33,7 @@ func init() {
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
 	}
+
 }
 
 func main() {
@@ -54,6 +57,11 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 			os.Exit(1)
 		}
+
+		err = helpers.Migrate(context.Background(), conn, migrations.MigrateFuncs())
+		if err != nil {
+			log.Fatal(err)
+		}
 		storage = postgresql.NewDBRepository(conn)
 		defer conn.Close(context.Background())
 	}
@@ -67,6 +75,6 @@ func main() {
 	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage}
 
 	log.Print("Started at " + appEnv.ServerAddress)
-	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethodhelpers.Gzip(httpMethodhelpers.Cookie(httpMethod.Routers()))))
+	log.Fatal(http.ListenAndServe(appEnv.ServerAddress,  httpMethodhelpers.Gzip(httpMethod.Routers()))) 
 
 }
