@@ -20,8 +20,8 @@ func Cookie(next http.Handler) http.Handler {
 				Value:   helpers.GenerateToken(8),
 			}
 
-			http.SetCookie(w, ck)
 		}
+		http.SetCookie(w, ck)
 
 		next.ServeHTTP(w, r)
 	})
