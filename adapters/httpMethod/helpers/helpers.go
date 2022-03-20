@@ -1,8 +1,10 @@
 package helpers
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	helpers "github.com/n0byk/short_url_backend/helpers"
 )
@@ -19,10 +21,23 @@ func ValidateURL(str string) bool {
 }
 
 func SetCookie(w http.ResponseWriter, r *http.Request) {
-	cookie, _ := r.Cookie("user_id")
-	if len(cookie.Value) == 0 {
+	cookie, err := r.Cookie("user_id")
 
-		http.SetCookie(w, &http.Cookie{Name: "user_id", Value: helpers.GenerateToken(8), HttpOnly: false})
+	if err != nil {
+
+		fmt.Println(err)
+	}
+
+	if len(cookie.Value) == 0 {
+		fmt.Println("new cookie")
+		ck := http.Cookie{
+			Name:    "user_id",
+			Path:    "/",
+			Expires: time.Now().AddDate(1, 0, 0), //1 год
+			Value:   helpers.GenerateToken(8),
+		}
+
+		http.SetCookie(w, &ck)
 	}
 
 }
