@@ -18,7 +18,7 @@ func (m *memoryRepository) AddURL(key, url, user string) error {
 }
 
 func (m *memoryRepository) DBPing() error {
-	return errors.New("Only for Postgresql")
+	return errors.New("only for Postgresql")
 }
 
 func (m *memoryRepository) SetUserData(key, url, user string) error {

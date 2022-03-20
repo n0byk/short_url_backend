@@ -37,7 +37,7 @@ func (f *fileRepository) AddURL(key, url, user string) error {
 }
 
 func (f *fileRepository) DBPing() error {
-	return errors.New("Only for Postgresql")
+	return errors.New("filestorage: only for Postgresql")
 }
 
 func (f *fileRepository) SetUserData(key, url, user string) error {
