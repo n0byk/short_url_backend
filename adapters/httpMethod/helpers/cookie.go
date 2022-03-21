@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"net/http"
-	"time"
 
 	helpers "github.com/n0byk/short_url_backend/helpers"
 )
@@ -14,10 +13,8 @@ func Cookie(next http.Handler) http.Handler {
 		if err != nil {
 
 			ck = &http.Cookie{
-				Name:    "user_id",
-				Path:    "/",
-				Expires: time.Now().AddDate(1, 0, 0), //1 год
-				Value:   helpers.GenerateToken(8),
+				Name:  "user_id",
+				Value: helpers.GenerateToken(8),
 			}
 
 		}
