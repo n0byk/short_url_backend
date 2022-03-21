@@ -12,8 +12,8 @@ import (
 )
 
 type bulkProps struct {
-	Correlation_id string `json:"correlation_id"`
-	Original_url   string `json:"original_url"`
+	CorrelationID string `json:"correlation_id"`
+	OriginalURL   string `json:"original_url"`
 }
 
 func BulkAddURL(w http.ResponseWriter, r *http.Request) {
@@ -26,13 +26,13 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// userID, err := r.Cookie("user_id")
-	// if err != nil {
-	// 	log.Println("Can't get user_id ")
-	// 	http.Error(w, err.Error(), http.StatusBadRequest)
-	// 	return
-	// }
-
+	userID, err := r.Cookie("user_id")
+	if err != nil {
+		log.Println("Can't get user_id ")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	fmt.Println(userID)
 	err = json.Unmarshal(bodyBytes, &urlBytes)
 	if err != nil {
 		log.Print("ERR NewUrl - " + err.Error())
@@ -40,15 +40,12 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// if !httpMethodHelpers.ValidateURL(string(urlBytes.URL)) {
-	// 	log.Print("Validate error - " + string(urlBytes.URL))
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	return
-	// }
-
-	for i, bp := range urlBytes {
-		fmt.Println(i)
-		fmt.Println(bp)
+	for _, item := range urlBytes { 
+		if !httpMethodHelpers.ValidateURL(item.OriginalURL) {
+			log.Print("Validate error - " + item.OriginalURL)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
 	}
 
