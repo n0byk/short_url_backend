@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -41,6 +40,7 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var person []types.BulkJSONResponse
+
 	for _, item := range urlBytes {
 		if !httpMethodHelpers.ValidateURL(item.OriginalURL) {
 			log.Print("Validate error - " + item.OriginalURL)
@@ -58,6 +58,6 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 	if jsonError != nil {
 		log.Println("Unable to encode JSON")
 	}
-	fmt.Println(string(response))
-	httpMethodHelpers.JSONResponse(w, response, http.StatusBadRequest)
+
+	httpMethodHelpers.JSONResponse(w, response, http.StatusCreated)
 }
