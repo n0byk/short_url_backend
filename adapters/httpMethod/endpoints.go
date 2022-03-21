@@ -16,6 +16,7 @@ func Routers() *mux.Router {
 	router.HandleFunc("/{url}", handlers.GetURL).Methods("GET")
 	router.HandleFunc("/api/shorten", handlers.AddURLJSON).Methods("POST")
 	router.HandleFunc("/api/user/urls", handlers.UserURL).Methods("GET")
+	router.HandleFunc("/api/shorten/batch", handlers.BulkAddURL).Methods("POST")
 
 	return router
 }

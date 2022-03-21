@@ -69,7 +69,6 @@ func ReadBodyBytes(r *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("new url " + string(bodyBytes))
 	return bodyBytes, nil
 
 }
