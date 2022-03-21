@@ -8,7 +8,6 @@ import (
 
 func Cookie(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	 
 
 		_, err := r.Cookie("user_id")
 

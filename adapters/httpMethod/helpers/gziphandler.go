@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"strings"
 	"sync"
-
-	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
 var gzPool = sync.Pool{
@@ -37,12 +35,6 @@ func (w *gzipResponseWriter) Write(b []byte) (int, error) {
 
 func Gzip(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := r.Cookie("user_id")
-
-		if err != nil {
-			http.SetCookie(w, &http.Cookie{Name: "user_id", Value: helpers.GenerateToken(8), Path: "/", Secure: true})
-		}
-
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 			next.ServeHTTP(w, r)
 			return

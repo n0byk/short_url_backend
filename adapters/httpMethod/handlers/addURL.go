@@ -18,12 +18,13 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	ck := helpers.GenerateToken(8)
 	userID, err := r.Cookie("user_id")
 	if err != nil {
-		log.Println("Can't get user_id ")
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		if err != nil {
+			http.SetCookie(w, &http.Cookie{Name: "user_id", Value: ck, Path: "/", Secure: true})
+		}
+		userID.Value = ck
 	}
 
 	if !httpMethodHelpers.ValidateURL(string(bodyBytes)) {
