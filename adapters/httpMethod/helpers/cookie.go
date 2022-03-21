@@ -3,7 +3,7 @@ package helpers
 import (
 	"net/http"
 
-	helpers "github.com/n0byk/short_url_backend/helpers"
+	"github.com/n0byk/short_url_backend/helpers"
 )
 
 func Cookie(next http.Handler) http.Handler {
@@ -11,8 +11,11 @@ func Cookie(next http.Handler) http.Handler {
 
 		_, err := r.Cookie("user_id")
 
-		if err != nil {
-			http.SetCookie(w, &http.Cookie{Name: "user_id", Value: helpers.GenerateToken(8), Path: "/", Secure: false})
+		if err == http.ErrNoCookie {
+			token := helpers.GenerateToken(8)
+			r.AddCookie(&http.Cookie{Name: "user_id", Value: token, Path: "/", Secure: false})
+			http.SetCookie(w, &http.Cookie{Name: "user_id", Value: token, Path: "/", Secure: false})
+
 		}
 
 		next.ServeHTTP(w, r)
