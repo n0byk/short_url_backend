@@ -76,6 +76,6 @@ func main() {
 
 	log.Print("Started at " + appEnv.ServerAddress)
 
-	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethodhelpers.Gzip(httpMethod.Routers())))
+	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethodhelpers.Gzip(httpMethodhelpers.Cookie(httpMethod.Routers()))))
 
 }
