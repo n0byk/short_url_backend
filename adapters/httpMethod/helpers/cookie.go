@@ -8,8 +8,13 @@ import (
 
 func Cookie(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	 
 
-		http.SetCookie(w, &http.Cookie{Name: "user_id", Value: helpers.GenerateToken(8), Path: "/", Secure: true})
+		_, err := r.Cookie("user_id")
+
+		if err != nil {
+			http.SetCookie(w, &http.Cookie{Name: "user_id", Value: helpers.GenerateToken(8), Path: "/", Secure: true})
+		}
 
 		next.ServeHTTP(w, r)
 	})
