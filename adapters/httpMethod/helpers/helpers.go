@@ -5,9 +5,9 @@ import (
 	"net/url"
 )
 
-func JSONResponse(w http.ResponseWriter, responce []byte, httpStatus int) {
+func JSONResponse(w http.ResponseWriter, responce []byte) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(httpStatus)
+
 	w.Write(responce)
 }
 
