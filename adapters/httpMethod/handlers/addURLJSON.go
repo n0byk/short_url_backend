@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -50,7 +49,7 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 		log.Print("Unable to get token")
 	}
 	config.AppService.Storage.SetUserData(string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
-	fmt.Println(token)
+
 	person := types.JSONResponse{Result: config.AppService.BaseURL + "/" + token}
 	response, jsonError := json.Marshal(person)
 
