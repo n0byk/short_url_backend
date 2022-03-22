@@ -30,6 +30,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	if !httpMethodHelpers.ValidateURL(string(bodyBytes)) {
 		log.Println("Validate error - " + string(bodyBytes))
 		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -37,6 +38,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Some error while adding new URL")
 		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	var data = []byte(config.AppService.BaseURL + "/" + token)
