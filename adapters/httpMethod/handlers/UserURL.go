@@ -30,5 +30,11 @@ func UserURL(w http.ResponseWriter, r *http.Request) {
 	if jsonError != nil {
 		log.Print("Unable to encode JSON")
 	}
-	httpMethodHelpers.JSONResponse(w, response, http.StatusOK)
+
+	if len(data) > 0 {
+		httpMethodHelpers.JSONResponse(w, response, http.StatusOK)
+		return
+	}
+
+	httpMethodHelpers.JSONResponse(w, response, http.StatusNoContent)
 }
