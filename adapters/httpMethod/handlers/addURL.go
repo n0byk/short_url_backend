@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -39,7 +40,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var data = []byte(config.AppService.BaseURL + "/" + token)
 	config.AppService.Storage.SetUserData(string(bodyBytes), string(data), userID.Value)
-
+	fmt.Println("addURL" + string(bodyBytes))
 	w.Header().Set("Content-Type", "application/text; charset=utf-8")
 
 	w.WriteHeader(http.StatusCreated)

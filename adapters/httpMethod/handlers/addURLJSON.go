@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -56,6 +57,8 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 	if jsonError != nil {
 		log.Print("Unable to encode JSON")
 	}
+
+	fmt.Println("addURLJSON" + string(bodyBytes))
 	if duplicate {
 		httpMethodHelpers.JSONResponse(w, response, http.StatusConflict)
 		return
