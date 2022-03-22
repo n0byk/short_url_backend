@@ -6,8 +6,8 @@ import (
 )
 
 func JSONResponse(w http.ResponseWriter, responce []byte, httpStatus int) {
-	w.WriteHeader(httpStatus)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatus)
 	w.Write(responce)
 }
 
