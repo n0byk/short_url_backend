@@ -60,11 +60,9 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("addURLJSON" + string(bodyBytes))
 	if duplicate {
-		w.WriteHeader(http.StatusConflict)
-		httpMethodHelpers.JSONResponse(w, response)
+		httpMethodHelpers.JSONResponse(w, response, http.StatusConflict)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	httpMethodHelpers.JSONResponse(w, response)
+	httpMethodHelpers.JSONResponse(w, response, http.StatusCreated)
 }

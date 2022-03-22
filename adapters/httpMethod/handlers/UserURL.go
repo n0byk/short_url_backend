@@ -30,11 +30,9 @@ func UserURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(data) > 0 {
-		w.WriteHeader(http.StatusOK)
-		httpMethodHelpers.JSONResponse(w, response)
+		httpMethodHelpers.JSONResponse(w, response, http.StatusOK)
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
 
-	httpMethodHelpers.JSONResponse(w, response)
+	httpMethodHelpers.JSONResponse(w, response, http.StatusNoContent)
 }

@@ -60,6 +60,6 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 	if jsonError != nil {
 		log.Println("Unable to encode JSON")
 	}
-	w.WriteHeader(http.StatusCreated)
-	httpMethodHelpers.JSONResponse(w, response)
+
+	httpMethodHelpers.JSONResponse(w, response, http.StatusCreated)
 }
