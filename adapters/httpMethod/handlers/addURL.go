@@ -15,6 +15,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error while getting body - ")
+		w.WriteHeader(http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
