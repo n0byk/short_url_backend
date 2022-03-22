@@ -16,21 +16,19 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error while getting body - ")
 		w.WriteHeader(http.StatusInternalServerError)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if !httpMethodHelpers.ValidateURL(string(bodyBytes)) {
 		log.Println("Validate error - " + string(bodyBytes))
 		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
