@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -19,7 +18,6 @@ func UserURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(userID.Value)
 	data, err := config.AppService.Storage.GetUserData(userID.Value)
 	if err != nil {
 		log.Println("Err ", err)

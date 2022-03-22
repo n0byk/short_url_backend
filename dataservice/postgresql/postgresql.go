@@ -3,7 +3,6 @@ package postgresql
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/jackc/pgconn"
@@ -84,7 +83,6 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 	err := db.db.QueryRow(context.Background(), "select full_url from url_catalog where short_url=$1; ", key).Scan(&url)
 	switch err {
 	case nil:
-		fmt.Println(url)
 		return url, nil
 	case pgx.ErrNoRows:
 		return "", nil
