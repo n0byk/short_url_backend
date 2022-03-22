@@ -28,6 +28,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	if !httpMethodHelpers.ValidateURL(string(bodyBytes)) {
 		log.Println("Validate error - " + string(bodyBytes))
+
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
