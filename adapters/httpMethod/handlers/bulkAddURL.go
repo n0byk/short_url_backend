@@ -8,7 +8,6 @@ import (
 	httpMethodHelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	types "github.com/n0byk/short_url_backend/adapters/httpMethod/types"
 	config "github.com/n0byk/short_url_backend/config"
-	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
 type bulkProps struct {
@@ -48,8 +47,11 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		token := helpers.GenerateToken(config.AppService.ShortLinkLen)
-		config.AppService.Storage.AddURL(token, string(item.OriginalURL), userID.Value)
+		token, err := config.AppService.Storage.AddURL(string(item.OriginalURL), userID.Value)
+		if err != nil {
+			log.Println("Unable to get token")
+		}
+
 		config.AppService.Storage.SetUserData(string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
 		person = append(person, types.BulkJSONResponse{ShortURL: config.AppService.BaseURL + "/" + token, CorrelationID: item.CorrelationID})
 	}

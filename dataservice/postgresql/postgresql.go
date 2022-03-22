@@ -6,22 +6,47 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
+	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
+	"github.com/n0byk/short_url_backend/helpers"
 )
 
 type dbRepository struct {
 	db *pgx.Conn
 }
 
-func (db *dbRepository) AddURL(key, url, user string) error {
+func (db *dbRepository) AddURL(url, user string) (string, error) {
+
+	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
+
 	_, err := db.db.Exec(context.Background(), `INSERT INTO url_catalog (user_id, full_url, short_url) VALUES($1,$2,$3);`, user, url, key)
 	if err != nil {
-		log.Println(err)
-		return errors.New("DB error")
+
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			if pgErr.Code == "23505" {
+				var token string
+				err := db.db.QueryRow(context.Background(), "select short_url from url_catalog where full_url=$1; ", url).Scan(&token)
+				switch err {
+				case nil:
+					return token, nil
+				case pgx.ErrNoRows:
+					return "", nil
+				default:
+					log.Println(err)
+					return "", errors.New("DB error")
+				}
+			}
+		} else {
+			log.Println(err)
+			return "", errors.New("DB error")
+		}
+
 	}
-	return nil
+	return key, nil
 }
 
 func (db *dbRepository) SetUserData(key, url, user string) error {

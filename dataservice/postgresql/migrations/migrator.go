@@ -16,7 +16,8 @@ func MigrateFuncs() helpers.Funcs {
         id SERIAL PRIMARY KEY,
 		user_id  TEXT NOT NULL,
         full_url TEXT NOT NULL,
-        short_url TEXT NOT NULL UNIQUE 
+        short_url TEXT NOT NULL UNIQUE,
+		UNIQUE(user_id,full_url)
       )`,
 		})
 	}

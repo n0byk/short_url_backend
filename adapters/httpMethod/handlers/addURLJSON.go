@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
 	httpMethodHelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	types "github.com/n0byk/short_url_backend/adapters/httpMethod/types"
 	config "github.com/n0byk/short_url_backend/config"
-	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
 type props struct {
@@ -45,12 +45,12 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := helpers.GenerateToken(config.AppService.ShortLinkLen)
-
-	config.AppService.Storage.AddURL(token, string(urlBytes.URL), userID.Value)
-
+	token, err := config.AppService.Storage.AddURL(string(urlBytes.URL), userID.Value)
+	if err != nil {
+		log.Print("Unable to get token")
+	}
 	config.AppService.Storage.SetUserData(string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
-
+	fmt.Println(token)
 	person := types.JSONResponse{Result: config.AppService.BaseURL + "/" + token}
 	response, jsonError := json.Marshal(person)
 

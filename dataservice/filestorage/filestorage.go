@@ -7,8 +7,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
+	"github.com/n0byk/short_url_backend/helpers"
 )
 
 type fileRepository struct {
@@ -17,7 +19,8 @@ type fileRepository struct {
 	userData map[string][]entities.URLCatalog
 }
 
-func (f *fileRepository) AddURL(key, url, user string) error {
+func (f *fileRepository) AddURL(url, user string) (string, error) {
+	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	if len(f.urlsDB) == 0 {
 		byteValue, _ := ioutil.ReadAll(f.f)
 		json.Unmarshal([]byte(byteValue), &f.urlsDB)
@@ -29,11 +32,11 @@ func (f *fileRepository) AddURL(key, url, user string) error {
 
 	if err != nil {
 		log.Println(err)
-		return errors.New("filestorage: some troubles while adding new url")
+		return "", errors.New("filestorage: some troubles while adding new url")
 	}
 	f.f.Truncate(0)
 	f.f.Write(jsonData)
-	return nil
+	return key, nil
 }
 
 func (f *fileRepository) DBPing() error {

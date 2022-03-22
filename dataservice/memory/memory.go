@@ -3,8 +3,10 @@ package memory
 import (
 	"errors"
 
+	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
 	entities "github.com/n0byk/short_url_backend/dataservice/entities"
+	"github.com/n0byk/short_url_backend/helpers"
 )
 
 type memoryRepository struct {
@@ -12,9 +14,10 @@ type memoryRepository struct {
 	userData map[string][]entities.URLCatalog
 }
 
-func (m *memoryRepository) AddURL(key, url, user string) error {
+func (m *memoryRepository) AddURL(url, user string) (string, error) {
+	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	m.urlsDB[key] = url
-	return nil
+	return key, nil
 }
 
 func (m *memoryRepository) DBPing() error {

@@ -6,7 +6,6 @@ import (
 
 	httpMethodHelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	config "github.com/n0byk/short_url_backend/config"
-	helpers "github.com/n0byk/short_url_backend/helpers"
 )
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,9 +31,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := helpers.GenerateToken(config.AppService.ShortLinkLen)
-
-	err = config.AppService.Storage.AddURL(token, string(bodyBytes), userID.Value)
+	token, err := config.AppService.Storage.AddURL(string(bodyBytes), userID.Value)
 	if err != nil {
 		log.Println("Some error while adding new URL")
 		w.WriteHeader(http.StatusInternalServerError)
