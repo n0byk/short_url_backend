@@ -28,20 +28,21 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		httpMethodHelpers.JSONResponse(w, nil, http.StatusBadRequest)
 		return
 	}
 
 	err = json.Unmarshal(bodyBytes, &urlBytes)
 	if err != nil {
 		log.Print("ERR NewUrl - " + err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
+		httpMethodHelpers.JSONResponse(w, nil, http.StatusInternalServerError)
 		return
 	}
 
 	if !httpMethodHelpers.ValidateURL(string(urlBytes.URL)) {
 		log.Print("Validate error - " + string(urlBytes.URL))
-		w.WriteHeader(http.StatusBadRequest)
+
+		httpMethodHelpers.JSONResponse(w, nil, http.StatusBadRequest)
 		return
 	}
 
