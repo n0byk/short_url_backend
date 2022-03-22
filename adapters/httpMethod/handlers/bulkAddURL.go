@@ -47,7 +47,7 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		token, err := config.AppService.Storage.AddURL(string(item.OriginalURL), userID.Value)
+		token, _, err := config.AppService.Storage.AddURL(string(item.OriginalURL), userID.Value)
 		if err != nil {
 			log.Println("Unable to get token")
 		}

@@ -19,7 +19,7 @@ type fileRepository struct {
 	userData map[string][]entities.URLCatalog
 }
 
-func (f *fileRepository) AddURL(url, user string) (string, error) {
+func (f *fileRepository) AddURL(url, user string) (string, bool, error) {
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	if len(f.urlsDB) == 0 {
 		byteValue, _ := ioutil.ReadAll(f.f)
@@ -32,11 +32,11 @@ func (f *fileRepository) AddURL(url, user string) (string, error) {
 
 	if err != nil {
 		log.Println(err)
-		return "", errors.New("filestorage: some troubles while adding new url")
+		return "", false, errors.New("filestorage: some troubles while adding new url")
 	}
 	f.f.Truncate(0)
 	f.f.Write(jsonData)
-	return key, nil
+	return key, false, nil
 }
 
 func (f *fileRepository) DBPing() error {

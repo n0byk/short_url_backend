@@ -44,7 +44,7 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := config.AppService.Storage.AddURL(string(urlBytes.URL), userID.Value)
+	token, duplicate, err := config.AppService.Storage.AddURL(string(urlBytes.URL), userID.Value)
 	if err != nil {
 		log.Print("Unable to get token")
 	}
@@ -55,6 +55,10 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 
 	if jsonError != nil {
 		log.Print("Unable to encode JSON")
+	}
+	if duplicate {
+		httpMethodHelpers.JSONResponse(w, response, http.StatusConflict)
+		return
 	}
 	httpMethodHelpers.JSONResponse(w, response, http.StatusCreated)
 }

@@ -18,7 +18,7 @@ type dbRepository struct {
 	db *pgx.Conn
 }
 
-func (db *dbRepository) AddURL(url, user string) (string, error) {
+func (db *dbRepository) AddURL(url, user string) (string, bool, error) {
 
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 
@@ -32,21 +32,21 @@ func (db *dbRepository) AddURL(url, user string) (string, error) {
 				err := db.db.QueryRow(context.Background(), "select short_url from url_catalog where full_url=$1; ", url).Scan(&token)
 				switch err {
 				case nil:
-					return token, nil
+					return token, true, nil
 				case pgx.ErrNoRows:
-					return "", nil
+					return "", false, nil
 				default:
 					log.Println(err)
-					return "", errors.New("DB error")
+					return "", false, errors.New("DB error")
 				}
 			}
 		} else {
 			log.Println(err)
-			return "", errors.New("DB error")
+			return "", false, errors.New("DB error")
 		}
 
 	}
-	return key, nil
+	return key, false, nil
 }
 
 func (db *dbRepository) SetUserData(key, url, user string) error {
