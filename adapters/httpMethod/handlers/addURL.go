@@ -16,6 +16,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error while getting body - ")
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(nil)
 		return
 	}
 
@@ -24,6 +25,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 
 		log.Println("Can't get user_id ")
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write(nil)
 		return
 	}
 
@@ -31,6 +33,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Validate error - " + string(bodyBytes))
 
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write(nil)
 		return
 	}
 
