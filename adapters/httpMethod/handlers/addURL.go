@@ -7,7 +7,6 @@ import (
 
 	httpMethodHelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	config "github.com/n0byk/short_url_backend/config"
-	"github.com/n0byk/short_url_backend/helpers"
 )
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,12 +21,10 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := r.Cookie("user_id")
 	if err != nil {
-		token := helpers.GenerateToken(8)
-		http.SetCookie(w, &http.Cookie{Name: "user_id", Value: token, Path: "/", Secure: false})
-		userID.Value = token
-		// log.Println("Can't get user_id ")
-		// w.WriteHeader(http.StatusBadRequest)
-		// return
+
+		log.Println("Can't get user_id ")
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	if !httpMethodHelpers.ValidateURL(string(bodyBytes)) {
