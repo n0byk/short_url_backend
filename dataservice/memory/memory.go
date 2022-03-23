@@ -26,7 +26,7 @@ func (m *memoryRepository) DBPing() error {
 
 func (m *memoryRepository) SetUserData(key, url, user string) error {
 
-	m.userData[user] = append(m.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})
+	m.userData[user] = append(m.userData[user], entities.URLCatalog{ShortURL: url, FullURL: key})
 
 	return nil
 }
