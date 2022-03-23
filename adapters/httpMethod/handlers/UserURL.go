@@ -24,6 +24,7 @@ func UserURL(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Err ", err)
 		w.WriteHeader(http.StatusNoContent)
+		return
 	}
 	response, jsonError := json.Marshal(data)
 
