@@ -16,16 +16,12 @@ func UserURL(w http.ResponseWriter, r *http.Request) {
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	data, err := config.AppService.Storage.GetUserData(userID.Value)
-	if err != nil {
-		log.Println("Err ", err)
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
+	data, _ := config.AppService.Storage.GetUserData(userID.Value)
+
 	response, jsonError := json.Marshal(data)
 
 	if jsonError != nil {
