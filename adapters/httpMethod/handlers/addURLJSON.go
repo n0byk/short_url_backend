@@ -16,7 +16,7 @@ type props struct {
 }
 
 func AddURLJSON(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println("AddURLJSON")
 	var urlBytes props
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
 	if err != nil {

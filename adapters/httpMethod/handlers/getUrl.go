@@ -9,6 +9,8 @@ import (
 )
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetURL")
+
 	shortURL := mux.Vars(r)["url"]
 
 	fullURL, err := config.AppService.Storage.GetURL(shortURL)

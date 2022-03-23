@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -10,7 +11,8 @@ import (
 )
 
 func UserURL(w http.ResponseWriter, r *http.Request) {
-	// httpMethodHelpers.SetCookie(w, r)
+	fmt.Println("UserURL")
+
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 		log.Println("Can't get user_id ")
