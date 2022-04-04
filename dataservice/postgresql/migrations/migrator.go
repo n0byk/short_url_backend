@@ -17,6 +17,7 @@ func MigrateFuncs() helpers.Funcs {
 		user_id  TEXT NOT NULL,
         full_url TEXT NOT NULL,
         short_url TEXT NOT NULL UNIQUE,
+        delete_time date default null,
 		UNIQUE(full_url)
       )`,
 		})
