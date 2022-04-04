@@ -3,30 +3,29 @@ package main
 import (
 	"bytes"
 	"compress/gzip"
-	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 func main() {
-	var b bytes.Buffer
-	gz := gzip.NewWriter(&b)
-	if _, err := gz.Write([]byte("http://ya.ru")); err != nil {
+	var buf bytes.Buffer // на месте bytes.Buffer может быть любой io.Writer, например http.ResponseWriter
+	w := gzip.NewWriter(&buf)
+	_, err := w.Write([]byte("http://jwt.io")) // здесь мы записываем строку. Так как buf у нас обернут в gzip, в него запишется уже сжатая строка
+	if err != nil {
 		panic(err)
 	}
-	if err := gz.Flush(); err != nil {
-		panic(err)
-	}
-	if err := gz.Close(); err != nil {
-		panic(err)
-	}
-	str := base64.StdEncoding.EncodeToString(b.Bytes())
-	fmt.Println(str)
-	data, _ := base64.StdEncoding.DecodeString(str)
-	fmt.Println(data)
-	rdata := bytes.NewReader(data)
-	r, _ := gzip.NewReader(rdata)
-	s, _ := ioutil.ReadAll(r)
-	fmt.Println(string(s))
+	w.Close() // обязательно закрываем io.WriteCloser, который возвращает compress/gzip
 
+	// сжатая строка
+	fmt.Println(buf.String())
+
+	r, err := gzip.NewReader(&buf)
+	if err != nil {
+		panic(err)
+	}
+	_ = os.WriteFile("./1.txt", buf.Bytes(), 0644)
+	bytes := make([]byte, 100)
+	r.Read(bytes)
+	// исхоная строка
+	fmt.Println(string(bytes))
 }

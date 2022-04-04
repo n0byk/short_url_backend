@@ -7,35 +7,61 @@ import (
 	"log"
 	"os"
 
+	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
+	entities "github.com/n0byk/short_url_backend/dataservice/entities"
+	"github.com/n0byk/short_url_backend/helpers"
 )
 
 type fileRepository struct {
-	f  *os.File
-	db map[string]string
+	f        *os.File
+	urlsDB   map[string]string
+	userData map[string][]entities.URLCatalog
 }
 
-func (f *fileRepository) AddURL(key, url string) error {
-	if len(f.db) == 0 {
+func (f *fileRepository) AddURL(url, user string) (string, bool, error) {
+	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
+	if len(f.urlsDB) == 0 {
 		byteValue, _ := ioutil.ReadAll(f.f)
-		json.Unmarshal([]byte(byteValue), &f.db)
+		json.Unmarshal([]byte(byteValue), &f.urlsDB)
 	}
 
-	f.db[key] = url
+	f.urlsDB[key] = url
 
-	jsonData, err := json.Marshal(f.db)
+	jsonData, err := json.Marshal(f.urlsDB)
 
 	if err != nil {
 		log.Println(err)
-		return errors.New("filestorage: some troubles while adding new url")
+		return "", false, errors.New("filestorage: some troubles while adding new url")
 	}
 	f.f.Truncate(0)
 	f.f.Write(jsonData)
+	return key, false, nil
+}
+
+func (f *fileRepository) DBPing() error {
+	return errors.New("filestorage: only for Postgresql")
+}
+
+func (f *fileRepository) SetUserData(key, url, user string) error {
+
+	f.userData[user] = append(f.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})
+
 	return nil
 }
 
+func (f *fileRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
+
+	data, exists := f.userData[user]
+	if !exists {
+		return []entities.URLCatalog{}, errors.New("Cant_get_user_info")
+	}
+
+	return data, nil
+}
+
 func (f *fileRepository) GetURL(key string) (string, error) {
-	var urls = f.db
+	var urls = f.urlsDB
 	byteValue, _ := ioutil.ReadAll(f.f)
 	json.Unmarshal([]byte(byteValue), &urls)
 
@@ -49,7 +75,8 @@ func (f *fileRepository) GetURL(key string) (string, error) {
 
 func NewFileRepository(f *os.File) dataservice.Repository {
 	return &fileRepository{
-		f:  f,
-		db: make(map[string]string),
+		f:        f,
+		urlsDB:   make(map[string]string),
+		userData: make(map[string][]entities.URLCatalog),
 	}
 }

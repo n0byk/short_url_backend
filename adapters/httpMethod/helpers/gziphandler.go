@@ -24,11 +24,6 @@ type gzipResponseWriter struct {
 	http.ResponseWriter
 }
 
-func (w *gzipResponseWriter) WriteHeader(status int) {
-	w.Header().Del("Content-Length")
-	w.ResponseWriter.WriteHeader(status)
-}
-
 func (w *gzipResponseWriter) Write(b []byte) (int, error) {
 	return w.Writer.Write(b)
 }
@@ -38,6 +33,7 @@ func Gzip(next http.Handler) http.Handler {
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 			next.ServeHTTP(w, r)
 			return
+
 		}
 
 		gz := gzPool.Get().(*gzip.Writer)
@@ -51,34 +47,25 @@ func Gzip(next http.Handler) http.Handler {
 
 func ReadBodyBytes(r *http.Request) ([]byte, error) {
 
-	bodyBytes, readErr := ioutil.ReadAll(r.Body)
-	if readErr != nil {
-		return nil, readErr
-	}
-	defer r.Body.Close()
-	if r.Header.Get("Content-Encoding") == "gzip" {
+	var reader io.Reader
 
-		r, gzErr := gzip.NewReader(bytes.NewReader(bodyBytes))
-		if gzErr != nil {
-			return nil, gzErr
+	if r.Header.Get("Content-Encoding") == "gzip" || r.Header.Get("Content-Encoding") == "application/gzip" {
+		gz, err := gzip.NewReader(r.Body)
+		if err != nil {
+			return nil, err
 		}
-
-		defer r.Close()
-
-		rdata := bytes.NewReader(bodyBytes)
-		t, _ := gzip.NewReader(rdata)
-		s, _ := ioutil.ReadAll(t)
-		fmt.Println(string(s))
-
-		bb, err2 := ioutil.ReadAll(r)
-		if err2 != nil {
-			return nil, err2
-		}
-		fmt.Println(bodyBytes)
-		return bb, nil
+		reader = gz
+		defer gz.Close()
 	} else {
-		return bodyBytes, nil
+		reader = r.Body
 	}
+
+	bodyBytes, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	return bodyBytes, nil
+
 }
 
 func Compress(data []byte) ([]byte, error) {
