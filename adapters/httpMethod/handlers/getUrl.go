@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -10,7 +9,6 @@ import (
 )
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GetURL")
 
 	shortURL := mux.Vars(r)["url"]
 
