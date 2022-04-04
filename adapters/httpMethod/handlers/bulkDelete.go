@@ -7,6 +7,6 @@ import (
 
 func BulkDelete(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello! Parameters: %v", r.URL.Query())
+	w.WriteHeader(http.StatusAccepted)
 
-	// httpMethodHelpers.JSONResponse(w, response, http.StatusCreated)
 }
