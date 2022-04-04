@@ -2,6 +2,7 @@ package memory
 
 import (
 	"errors"
+	"net/url"
 
 	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
@@ -48,6 +49,11 @@ func (m *memoryRepository) GetURL(key string) (string, error) {
 	}
 
 	return fullURL, nil
+}
+
+func (m *memoryRepository) BulkDelete(urls url.Values, userID string) error {
+
+	return nil
 }
 
 func NewMemoryRepository() dataservice.Repository {

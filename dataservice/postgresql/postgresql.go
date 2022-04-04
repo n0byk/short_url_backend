@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"net/url"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -28,7 +29,7 @@ func (db *dbRepository) AddURL(url, user string) (string, bool, error) {
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == "23505" {
 				var token string
-				err := db.db.QueryRow(context.Background(), "select short_url from url_catalog where full_url=$1; ", url).Scan(&token)
+				err := db.db.QueryRow(context.Background(), "select short_url from url_catalog where full_url=$1 and delete_time is null; ", url).Scan(&token)
 				switch err {
 				case nil:
 					return token, true, nil
@@ -58,7 +59,7 @@ func (db *dbRepository) DBPing() error {
 
 func (db *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
 
-	rows, _ := db.db.Query(context.Background(), "select full_url, short_url from url_catalog where user_id=$1; ", user)
+	rows, _ := db.db.Query(context.Background(), "select full_url, short_url from url_catalog where user_id=$1 and delete_time is null; ", user)
 
 	var urlCatalog []entities.URLCatalog
 
@@ -80,7 +81,7 @@ func (db *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) 
 
 func (db *dbRepository) GetURL(key string) (string, error) {
 	var url string
-	err := db.db.QueryRow(context.Background(), "select full_url from url_catalog where short_url=$1; ", key).Scan(&url)
+	err := db.db.QueryRow(context.Background(), "select full_url from url_catalog where short_url=$1 and delete_time is null; ", key).Scan(&url)
 	switch err {
 	case nil:
 		return url, nil
@@ -90,6 +91,35 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 		log.Println(err)
 		return "", errors.New("DB error")
 	}
+}
+
+func (db *dbRepository) BulkDelete(urls url.Values, user_id string) error {
+
+	ctx := context.Background()
+
+	tx, err := db.db.Begin(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	b := &pgx.Batch{}
+	log.Println(urls)
+	for id := range urls {
+
+		sqlStatement := `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`
+		b.Queue(sqlStatement, id, user_id)
+	}
+
+	batchResults := tx.SendBatch(ctx, b)
+
+	var qerr error
+	var rows pgx.Rows
+	for qerr == nil {
+		rows, qerr = batchResults.Query()
+		rows.Close()
+	}
+
+	return tx.Commit(ctx)
 }
 
 func NewDBRepository(db *pgx.Conn) dataservice.Repository {

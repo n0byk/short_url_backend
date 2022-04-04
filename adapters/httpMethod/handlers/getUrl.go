@@ -18,5 +18,5 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println("Err ", err)
-	w.WriteHeader(http.StatusBadRequest)
+	w.WriteHeader(http.StatusGone)
 }
