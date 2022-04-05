@@ -3,7 +3,6 @@ package postgresql
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/jackc/pgconn"
@@ -96,36 +95,27 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 func (db *dbRepository) BulkDelete(urls []string, userID string) error {
 
 	ctx := context.Background()
-	for id := range urls {
-		fmt.Println(userID)
-		db.db.Exec(ctx, `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`, id, userID)
 
+	tx, err := db.db.Begin(ctx)
+	if err != nil {
+		panic(err)
 	}
-	return nil
-	// tx, err := db.db.Begin(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
 
-	// b := &pgx.Batch{}
-	// log.Println(urls)
-	// for id := range urls {
-	// 	fmt.Println(userID)
-	// 	db.db.Exec(context.Background(), `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`, id, userID)
-	// 	sqlStatement := `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`
-	// 	b.Queue(sqlStatement, id, userID)
-	// }
+	b := &pgx.Batch{}
+	for _, url := range urls {
+		sqlStatement := `UPDATE url_catalog SET delete_time = now() WHERE short_url = $1 and user_id = $2;;`
+		b.Queue(sqlStatement, url, userID)
+	}
 
-	// batchResults := tx.SendBatch(ctx, b)
+	batchResults := tx.SendBatch(ctx, b)
 
-	// var qerr error
-	// var rows pgx.Rows
-	// for qerr == nil {
-	// 	rows, qerr = batchResults.Query()
-	// 	rows.Close()
-	// }
-
-	// return tx.Commit(ctx)
+	var qerr error
+	var rows pgx.Rows
+	for qerr == nil {
+		rows, qerr = batchResults.Query()
+		rows.Close()
+	}
+	return tx.Commit(ctx)
 }
 
 func NewDBRepository(db *pgx.Conn) dataservice.Repository {
