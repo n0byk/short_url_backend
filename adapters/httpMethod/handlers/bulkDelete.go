@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -8,6 +11,16 @@ import (
 )
 
 func BulkDelete(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil || len(body) == 0 {
+		log.Println("Can't get body ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	var ids []string
+	err = json.Unmarshal(body, &ids)
+	fmt.Println(ids)
+
 	userID, err := r.Cookie("user_id")
 	if err != nil {
 
@@ -16,7 +29,6 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 		w.Write(nil)
 		return
 	}
-	log.Println(r)
 
 	go func() {
 		log.Println("done")
