@@ -11,8 +11,10 @@ import (
 func GetURL(w http.ResponseWriter, r *http.Request) {
 
 	shortURL := mux.Vars(r)["url"]
+	log.Println("/{url}")
 
 	fullURL, err := config.AppService.Storage.GetURL(shortURL)
+
 	if err == nil {
 		http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 		return

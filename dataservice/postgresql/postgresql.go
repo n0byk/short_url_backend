@@ -80,12 +80,14 @@ func (db *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) 
 
 func (db *dbRepository) GetURL(key string) (string, error) {
 	var url string
+
 	err := db.db.QueryRow(context.Background(), "select full_url from url_catalog where short_url=$1 and delete_time is null; ", key).Scan(&url)
 	switch err {
 	case nil:
 		return url, nil
 	case pgx.ErrNoRows:
-		return "", nil
+		log.Println(err)
+		return "", err
 	default:
 		log.Println(err)
 		return "", errors.New("DB error")
