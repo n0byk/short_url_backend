@@ -81,7 +81,7 @@ func (db *dbRepository) GetUserData(user string) ([]entities.URLCatalog, error) 
 func (db *dbRepository) GetURL(key string) (string, error) {
 	var url string
 
-	err := db.db.QueryRow(context.Background(), "select full_url from url_catalog where short_url=$1 and delete_time is null; ", key).Scan(&url)
+	err := db.db.QueryRow(context.Background(), "select full_url from url_catalog where short_url=$1 and delete_time is null;", key).Scan(&url)
 	switch err {
 	case nil:
 		return url, nil
@@ -104,7 +104,7 @@ func (db *dbRepository) BulkDelete(urls []string, userID string) error {
 
 	b := &pgx.Batch{}
 	for _, url := range urls {
-		sqlStatement := `UPDATE url_catalog SET delete_time = now() WHERE short_url = $1 and user_id = $2;;`
+		sqlStatement := `UPDATE url_catalog SET delete_time = now() WHERE short_url = $1 and user_id = $2;`
 		b.Queue(sqlStatement, url, userID)
 	}
 
