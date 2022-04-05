@@ -48,7 +48,7 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 	err = <-errC
 
 	if err != nil {
-		log.Println("Can't get user_id ")
+		log.Println("Can't BulkDelete ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(nil)
 		return
