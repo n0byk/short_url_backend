@@ -3,8 +3,8 @@ package postgresql
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
-	"net/url"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -93,33 +93,39 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 	}
 }
 
-func (db *dbRepository) BulkDelete(urls url.Values, user_id string) error {
+func (db *dbRepository) BulkDelete(urls []string, userID string) error {
 
 	ctx := context.Background()
-
-	tx, err := db.db.Begin(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	b := &pgx.Batch{}
-	log.Println(urls)
 	for id := range urls {
+		fmt.Println(userID)
+		db.db.Exec(ctx, `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`, id, userID)
 
-		sqlStatement := `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`
-		b.Queue(sqlStatement, id, user_id)
 	}
+	return nil
+	// tx, err := db.db.Begin(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	batchResults := tx.SendBatch(ctx, b)
+	// b := &pgx.Batch{}
+	// log.Println(urls)
+	// for id := range urls {
+	// 	fmt.Println(userID)
+	// 	db.db.Exec(context.Background(), `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`, id, userID)
+	// 	sqlStatement := `UPDATE url_catalog SET delete_time = now WHERE short_url = $1 and user_id = $2;`
+	// 	b.Queue(sqlStatement, id, userID)
+	// }
 
-	var qerr error
-	var rows pgx.Rows
-	for qerr == nil {
-		rows, qerr = batchResults.Query()
-		rows.Close()
-	}
+	// batchResults := tx.SendBatch(ctx, b)
 
-	return tx.Commit(ctx)
+	// var qerr error
+	// var rows pgx.Rows
+	// for qerr == nil {
+	// 	rows, qerr = batchResults.Query()
+	// 	rows.Close()
+	// }
+
+	// return tx.Commit(ctx)
 }
 
 func NewDBRepository(db *pgx.Conn) dataservice.Repository {

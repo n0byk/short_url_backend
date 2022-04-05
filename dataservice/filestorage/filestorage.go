@@ -5,7 +5,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"log"
-	"net/url"
 	"os"
 
 	"github.com/n0byk/short_url_backend/config"
@@ -74,7 +73,7 @@ func (f *fileRepository) GetURL(key string) (string, error) {
 	return fullURL, nil
 }
 
-func (f *fileRepository) BulkDelete(urls url.Values, userID string) error {
+func (f *fileRepository) BulkDelete(urls []string, userID string) error {
 
 	return nil
 }
