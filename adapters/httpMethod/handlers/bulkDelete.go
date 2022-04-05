@@ -34,10 +34,25 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// go func() {
+	// 	log.Println("done")
+	// 	config.AppService.Storage.BulkDelete(ids, userID.Value)
+	// }()
+
+	errC := make(chan error)
 	go func() {
 		log.Println("done")
-		config.AppService.Storage.BulkDelete(ids, userID.Value)
+		errC <- config.AppService.Storage.BulkDelete(ids, userID.Value)
 	}()
+
+	err = <-errC
+
+	if err != nil {
+		log.Println("Can't get user_id ")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(nil)
+		return
+	}
 
 	log.Println("responce")
 	w.WriteHeader(http.StatusAccepted)
