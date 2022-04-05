@@ -86,7 +86,6 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 	case nil:
 		return url, nil
 	case pgx.ErrNoRows:
-		log.Println(err)
 		return "", err
 	default:
 		log.Println(err)
