@@ -117,13 +117,14 @@ func (db *dbRepository) BulkDelete(urls []string, userID string, wg *sync.WaitGr
 		rows, qerr = batchResults.Query()
 		rows.Close()
 	}
-
 	err = tx.Commit(ctx)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
 	wg.Done()
+
 	return nil
 }
 
