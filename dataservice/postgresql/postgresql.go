@@ -3,7 +3,6 @@ package postgresql
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"strings"
 	"sync"
@@ -98,8 +97,8 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 
 func (db *dbRepository) BulkDelete(urls []string, userID string, wg *sync.WaitGroup) error {
 
-	test, err := db.db.Exec(context.Background(), "UPDATE url_catalog SET delete_time = now() WHERE short_url IN($1) and user_id = $2;", strings.Join(urls, ", "), userID)
-	fmt.Println(test)
+	_, err := db.db.Query(context.Background(), "UPDATE url_catalog SET delete_time = now() WHERE short_url IN($1) and user_id = $2;", strings.Join(urls, ","), userID)
+
 	if err != nil {
 		log.Println(err)
 		return err
