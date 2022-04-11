@@ -34,14 +34,12 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 		w.Write(nil)
 		return
 	}
-	no := 3
+
 	var wg sync.WaitGroup
 
-	for i := 0; i < no; i++ {
-		wg.Add(1)
-		go config.AppService.Storage.BulkDelete(ids, userID.Value, &wg)
+	wg.Add(1)
+	go config.AppService.Storage.BulkDelete(ids, userID.Value, &wg)
 
-	}
 	wg.Wait()
 
 	w.WriteHeader(http.StatusAccepted)
