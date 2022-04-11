@@ -74,7 +74,10 @@ func (f *fileRepository) GetURL(key string) (string, error) {
 }
 
 func (f *fileRepository) BulkDelete(urls []string, userID string) error {
+	for _, v := range urls {
+		delete(f.urlsDB, v)
 
+	}
 	return nil
 }
 

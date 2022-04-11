@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strings"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -103,10 +104,11 @@ func (db *dbRepository) BulkDelete(urls []string, userID string) error {
 	}
 
 	b := &pgx.Batch{}
-	for _, url := range urls {
-		sqlStatement := `UPDATE url_catalog SET delete_time = now() WHERE short_url = $1 and user_id = $2;`
-		b.Queue(sqlStatement, url, userID)
-	}
+
+	sqlStatement := `UPDATE url_catalog SET delete_time = now() WHERE short_url IN ($1) and user_id = $2;`
+	b.Queue(sqlStatement, strings.Join(urls, ", "), userID)
+
+
 
 	batchResults := tx.SendBatch(ctx, b)
 

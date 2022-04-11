@@ -51,7 +51,10 @@ func (m *memoryRepository) GetURL(key string) (string, error) {
 }
 
 func (m *memoryRepository) BulkDelete(urls []string, userID string) error {
+	for _, v := range urls {
+		delete(m.urlsDB, v)
 
+	}
 	return nil
 }
 
