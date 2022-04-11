@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sync"
 
 	config "github.com/n0byk/short_url_backend/config"
 )
@@ -33,20 +34,15 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 		w.Write(nil)
 		return
 	}
+	no := 3
+	var wg sync.WaitGroup
 
-	errC := make(chan error)
-	go func() {
-		errC <- config.AppService.Storage.BulkDelete(ids, userID.Value)
-	}()
+	for i := 0; i < no; i++ {
+		wg.Add(1)
+		go config.AppService.Storage.BulkDelete(ids, userID.Value, &wg)
 
-	err = <-errC
-
-	if err != nil {
-		log.Println("Can't BulkDelete ", err)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(nil)
-		return
 	}
+	wg.Wait()
 
 	w.WriteHeader(http.StatusAccepted)
 }

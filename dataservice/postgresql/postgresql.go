@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"strings"
+	"sync"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -94,7 +95,7 @@ func (db *dbRepository) GetURL(key string) (string, error) {
 	}
 }
 
-func (db *dbRepository) BulkDelete(urls []string, userID string) error {
+func (db *dbRepository) BulkDelete(urls []string, userID string, wg *sync.WaitGroup) error {
 
 	ctx := context.Background()
 
@@ -108,8 +109,6 @@ func (db *dbRepository) BulkDelete(urls []string, userID string) error {
 	sqlStatement := `UPDATE url_catalog SET delete_time = now() WHERE short_url IN ($1) and user_id = $2;`
 	b.Queue(sqlStatement, strings.Join(urls, ", "), userID)
 
-
-
 	batchResults := tx.SendBatch(ctx, b)
 
 	var qerr error
@@ -118,7 +117,14 @@ func (db *dbRepository) BulkDelete(urls []string, userID string) error {
 		rows, qerr = batchResults.Query()
 		rows.Close()
 	}
-	return tx.Commit(ctx)
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		return err
+	}
+
+	wg.Done()
+	return nil
 }
 
 func NewDBRepository(db *pgx.Conn) dataservice.Repository {

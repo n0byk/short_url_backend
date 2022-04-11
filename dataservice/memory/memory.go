@@ -2,6 +2,7 @@ package memory
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
@@ -50,11 +51,12 @@ func (m *memoryRepository) GetURL(key string) (string, error) {
 	return fullURL, nil
 }
 
-func (m *memoryRepository) BulkDelete(urls []string, userID string) error {
+func (m *memoryRepository) BulkDelete(urls []string, userID string, wg *sync.WaitGroup) error {
 	for _, v := range urls {
 		delete(m.urlsDB, v)
 
 	}
+	wg.Done()
 	return nil
 }
 

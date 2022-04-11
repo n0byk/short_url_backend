@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
@@ -73,11 +74,13 @@ func (f *fileRepository) GetURL(key string) (string, error) {
 	return fullURL, nil
 }
 
-func (f *fileRepository) BulkDelete(urls []string, userID string) error {
+func (f *fileRepository) BulkDelete(urls []string, userID string, wg *sync.WaitGroup) error {
 	for _, v := range urls {
 		delete(f.urlsDB, v)
 
 	}
+
+	wg.Done()
 	return nil
 }
 
