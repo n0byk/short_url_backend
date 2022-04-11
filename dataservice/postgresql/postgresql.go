@@ -101,7 +101,7 @@ func (db *dbRepository) BulkDelete(urls []string, userID string, wg *sync.WaitGr
 
 	tx, err := db.db.Begin(ctx)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	b := &pgx.Batch{}
