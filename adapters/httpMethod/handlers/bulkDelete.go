@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -40,7 +41,7 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		config.AppService.Storage.BulkDelete(r.Context(), ids, userID.Value)
+		config.AppService.Storage.BulkDelete(context.Background(), ids, userID.Value)
 	}()
 
 	w.WriteHeader(http.StatusAccepted)
