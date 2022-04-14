@@ -1,6 +1,7 @@
 package filestorage
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -19,7 +20,7 @@ type fileRepository struct {
 	userData map[string][]entities.URLCatalog
 }
 
-func (f *fileRepository) AddURL(url, user string) (string, bool, error) {
+func (f *fileRepository) AddURL(ctx context.Context, url, user string) (string, bool, error) {
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	if len(f.urlsDB) == 0 {
 		byteValue, _ := ioutil.ReadAll(f.f)
@@ -43,14 +44,14 @@ func (f *fileRepository) DBPing() error {
 	return errors.New("filestorage: only for Postgresql")
 }
 
-func (f *fileRepository) SetUserData(key, url, user string) error {
+func (f *fileRepository) SetUserData(ctx context.Context, key, url, user string) error {
 
 	f.userData[user] = append(f.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})
 
 	return nil
 }
 
-func (f *fileRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
+func (f *fileRepository) GetUserData(ctx context.Context, user string) ([]entities.URLCatalog, error) {
 
 	data, exists := f.userData[user]
 	if !exists {
@@ -60,7 +61,7 @@ func (f *fileRepository) GetUserData(user string) ([]entities.URLCatalog, error)
 	return data, nil
 }
 
-func (f *fileRepository) GetURL(key string) (string, error) {
+func (f *fileRepository) GetURL(ctx context.Context, key string) (string, error) {
 	var urls = f.urlsDB
 	byteValue, _ := ioutil.ReadAll(f.f)
 	json.Unmarshal([]byte(byteValue), &urls)
@@ -73,7 +74,7 @@ func (f *fileRepository) GetURL(key string) (string, error) {
 	return fullURL, nil
 }
 
-func (f *fileRepository) BulkDelete(urls []string, userID string) error {
+func (f *fileRepository) BulkDelete(ctx context.Context, urls []string, userID string) error {
 	for _, v := range urls {
 		delete(f.urlsDB, v)
 

@@ -10,7 +10,8 @@ import (
 )
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
-fmt.Println("AddURLHandler")
+	fmt.Println("AddURLHandler")
+
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
 
 	if err != nil {
@@ -37,7 +38,7 @@ fmt.Println("AddURLHandler")
 		return
 	}
 
-	token, duplicate, err := config.AppService.Storage.AddURL(string(bodyBytes), userID.Value)
+	token, duplicate, err := config.AppService.Storage.AddURL(r.Context(), string(bodyBytes), userID.Value)
 	if err != nil {
 		log.Println("Some error while adding new URL")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -45,7 +46,7 @@ fmt.Println("AddURLHandler")
 		return
 	}
 	var data = []byte(config.AppService.BaseURL + "/" + token)
-	config.AppService.Storage.SetUserData(string(bodyBytes), string(data), userID.Value)
+	config.AppService.Storage.SetUserData(r.Context(), string(bodyBytes), string(data), userID.Value)
 	fmt.Println("addURL" + string(bodyBytes))
 	w.Header().Set("Content-Type", "application/text; charset=utf-8")
 	if duplicate {

@@ -40,7 +40,7 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		config.AppService.Storage.BulkDelete(ids, userID.Value)
+		config.AppService.Storage.BulkDelete(r.Context(), ids, userID.Value)
 	}()
 
 	w.WriteHeader(http.StatusAccepted)

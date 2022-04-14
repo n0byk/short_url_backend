@@ -48,12 +48,12 @@ func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		token, _, err := config.AppService.Storage.AddURL(string(item.OriginalURL), userID.Value)
+		token, _, err := config.AppService.Storage.AddURL(r.Context(), string(item.OriginalURL), userID.Value)
 		if err != nil {
 			log.Println("Unable to get token")
 		}
 
-		config.AppService.Storage.SetUserData(string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
+		config.AppService.Storage.SetUserData(r.Context(), string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
 		person = append(person, types.BulkJSONResponse{ShortURL: config.AppService.BaseURL + "/" + token, CorrelationID: item.CorrelationID})
 	}
 

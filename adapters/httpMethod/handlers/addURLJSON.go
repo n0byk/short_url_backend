@@ -46,11 +46,11 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, duplicate, err := config.AppService.Storage.AddURL(string(urlBytes.URL), userID.Value)
+	token, duplicate, err := config.AppService.Storage.AddURL(r.Context(), string(urlBytes.URL), userID.Value)
 	if err != nil {
 		log.Print("Unable to get token")
 	}
-	config.AppService.Storage.SetUserData(string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
+	config.AppService.Storage.SetUserData(r.Context(), string(bodyBytes), config.AppService.BaseURL+"/"+token, userID.Value)
 
 	person := types.JSONResponse{Result: config.AppService.BaseURL + "/" + token}
 	response, jsonError := json.Marshal(person)

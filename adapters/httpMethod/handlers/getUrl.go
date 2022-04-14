@@ -12,7 +12,7 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 
 	shortURL := mux.Vars(r)["url"]
 
-	fullURL, err := config.AppService.Storage.GetURL(shortURL)
+	fullURL, err := config.AppService.Storage.GetURL(r.Context(), shortURL)
 
 	if err == nil {
 		http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)

@@ -20,7 +20,7 @@ func UserURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, _ := config.AppService.Storage.GetUserData(userID.Value)
+	data, _ := config.AppService.Storage.GetUserData(r.Context(), userID.Value)
 
 	response, jsonError := json.Marshal(data)
 

@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"context"
 	"errors"
 
 	"github.com/n0byk/short_url_backend/config"
@@ -14,7 +15,7 @@ type memoryRepository struct {
 	userData map[string][]entities.URLCatalog
 }
 
-func (m *memoryRepository) AddURL(url, user string) (string, bool, error) {
+func (m *memoryRepository) AddURL(ctx context.Context, url, user string) (string, bool, error) {
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	m.urlsDB[key] = url
 	return key, false, nil
@@ -24,14 +25,14 @@ func (m *memoryRepository) DBPing() error {
 	return errors.New("only for Postgresql")
 }
 
-func (m *memoryRepository) SetUserData(key, url, user string) error {
+func (m *memoryRepository) SetUserData(ctx context.Context, key, url, user string) error {
 
 	m.userData[user] = append(m.userData[user], entities.URLCatalog{ShortURL: url, FullURL: key})
 
 	return nil
 }
 
-func (m *memoryRepository) GetUserData(user string) ([]entities.URLCatalog, error) {
+func (m *memoryRepository) GetUserData(ctx context.Context, user string) ([]entities.URLCatalog, error) {
 
 	data, exists := m.userData[user]
 	if !exists {
@@ -41,7 +42,7 @@ func (m *memoryRepository) GetUserData(user string) ([]entities.URLCatalog, erro
 	return data, nil
 }
 
-func (m *memoryRepository) GetURL(key string) (string, error) {
+func (m *memoryRepository) GetURL(ctx context.Context, key string) (string, error) {
 	fullURL, exists := m.urlsDB[key]
 	if !exists {
 		return "", errors.New("Cant_get_URL")
@@ -50,7 +51,7 @@ func (m *memoryRepository) GetURL(key string) (string, error) {
 	return fullURL, nil
 }
 
-func (m *memoryRepository) BulkDelete(urls []string, userID string) error {
+func (m *memoryRepository) BulkDelete(ctx context.Context, urls []string, userID string) error {
 	for _, v := range urls {
 		delete(m.urlsDB, v)
 
