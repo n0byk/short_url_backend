@@ -11,13 +11,13 @@ import (
 )
 
 type memoryRepository struct {
-	urlsDB   map[string]string
+	urlsDB   map[string]entities.URLdb
 	userData map[string][]entities.URLCatalog
 }
 
 func (m *memoryRepository) AddURL(ctx context.Context, url, user string) (string, bool, error) {
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
-	m.urlsDB[key] = url
+	m.urlsDB[key] = entities.URLdb{FullURL: url, UserID: user}
 	return key, false, nil
 }
 
@@ -48,7 +48,7 @@ func (m *memoryRepository) GetURL(ctx context.Context, key string) (string, erro
 		return "", errors.New("Cant_get_URL")
 	}
 
-	return fullURL, nil
+	return fullURL.FullURL, nil
 }
 
 func (m *memoryRepository) BulkDelete(ctx context.Context, urls []string, userID string) error {
@@ -60,5 +60,5 @@ func (m *memoryRepository) BulkDelete(ctx context.Context, urls []string, userID
 }
 
 func NewMemoryRepository() dataservice.Repository {
-	return &memoryRepository{urlsDB: make(map[string]string), userData: make(map[string][]entities.URLCatalog)}
+	return &memoryRepository{urlsDB: make(map[string]entities.URLdb), userData: make(map[string][]entities.URLCatalog)}
 }

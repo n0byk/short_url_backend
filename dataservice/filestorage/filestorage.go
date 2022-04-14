@@ -16,7 +16,7 @@ import (
 
 type fileRepository struct {
 	f        *os.File
-	urlsDB   map[string]string
+	urlsDB   map[string]entities.URLdb
 	userData map[string][]entities.URLCatalog
 }
 
@@ -27,7 +27,7 @@ func (f *fileRepository) AddURL(ctx context.Context, url, user string) (string, 
 		json.Unmarshal([]byte(byteValue), &f.urlsDB)
 	}
 
-	f.urlsDB[key] = url
+	f.urlsDB[key] = entities.URLdb{FullURL: url, UserID: user}
 
 	jsonData, err := json.Marshal(f.urlsDB)
 
@@ -71,7 +71,7 @@ func (f *fileRepository) GetURL(ctx context.Context, key string) (string, error)
 		return "", errors.New("Cant_get_URL")
 	}
 
-	return fullURL, nil
+	return fullURL.FullURL, nil
 }
 
 func (f *fileRepository) BulkDelete(ctx context.Context, urls []string, userID string) error {
@@ -85,7 +85,7 @@ func (f *fileRepository) BulkDelete(ctx context.Context, urls []string, userID s
 func NewFileRepository(f *os.File) dataservice.Repository {
 	return &fileRepository{
 		f:        f,
-		urlsDB:   make(map[string]string),
+		urlsDB:   make(map[string]entities.URLdb),
 		userData: make(map[string][]entities.URLCatalog),
 	}
 }
