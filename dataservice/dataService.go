@@ -1,8 +1,6 @@
 package dataservice
 
 import (
-	"sync"
-
 	"github.com/n0byk/short_url_backend/dataservice/entities"
 )
 
@@ -12,5 +10,5 @@ type Repository interface {
 	SetUserData(key, url, user string) error
 	GetUserData(user string) ([]entities.URLCatalog, error)
 	DBPing() error
-	BulkDelete(urls []string, userID string, wg *sync.WaitGroup) error
+	BulkDelete(urls []string, userID string) error
 }

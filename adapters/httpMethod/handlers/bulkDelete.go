@@ -11,6 +11,8 @@ import (
 	config "github.com/n0byk/short_url_backend/config"
 )
 
+var wg sync.WaitGroup
+
 func BulkDelete(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(body) == 0 {
@@ -35,12 +37,11 @@ func BulkDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var wg sync.WaitGroup
-
 	wg.Add(1)
-	go config.AppService.Storage.BulkDelete(ids, userID.Value, &wg)
-
-	wg.Wait()
+	go func() {
+		defer wg.Done()
+		config.AppService.Storage.BulkDelete(ids, userID.Value)
+	}()
 
 	w.WriteHeader(http.StatusAccepted)
 }
