@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
 	"github.com/n0byk/short_url_backend/config"
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
@@ -21,6 +22,8 @@ type fileRepository struct {
 }
 
 func (f *fileRepository) AddURL(ctx context.Context, url, user string) (string, bool, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	if len(f.urlsDB) == 0 {
 		byteValue, _ := ioutil.ReadAll(f.f)
@@ -45,14 +48,16 @@ func (f *fileRepository) DBPing() error {
 }
 
 func (f *fileRepository) SetUserData(ctx context.Context, key, url, user string) error {
-
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	f.userData[user] = append(f.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})
 
 	return nil
 }
 
 func (f *fileRepository) GetUserData(ctx context.Context, user string) ([]entities.URLCatalog, error) {
-
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	data, exists := f.userData[user]
 	if !exists {
 		return []entities.URLCatalog{}, errors.New("Cant_get_user_info")
@@ -62,6 +67,8 @@ func (f *fileRepository) GetUserData(ctx context.Context, user string) ([]entiti
 }
 
 func (f *fileRepository) GetURL(ctx context.Context, key string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	var urls = f.urlsDB
 	byteValue, _ := ioutil.ReadAll(f.f)
 	json.Unmarshal([]byte(byteValue), &urls)

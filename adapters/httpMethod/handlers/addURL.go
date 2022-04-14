@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -38,7 +39,7 @@ func AddURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, duplicate, err := config.AppService.Storage.AddURL(r.Context(), string(bodyBytes), userID.Value)
+	token, duplicate, err := config.AppService.Storage.AddURL(context.Background(), string(bodyBytes), userID.Value)
 	if err != nil {
 		log.Println("Some error while adding new URL")
 		w.WriteHeader(http.StatusInternalServerError)

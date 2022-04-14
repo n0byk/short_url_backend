@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -19,7 +20,8 @@ type dbRepository struct {
 }
 
 func (db *dbRepository) AddURL(ctx context.Context, url, user string) (string, bool, error) {
-
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 
 	_, err := db.db.Exec(ctx, `INSERT INTO url_catalog (user_id, full_url, short_url) VALUES($1,$2,$3);`, user, url, key)
@@ -58,7 +60,8 @@ func (db *dbRepository) DBPing() error {
 }
 
 func (db *dbRepository) GetUserData(ctx context.Context, user string) ([]entities.URLCatalog, error) {
-
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	rows, _ := db.db.Query(ctx, "select full_url, short_url from url_catalog where user_id=$1 and delete_time is null; ", user)
 
 	var urlCatalog []entities.URLCatalog
@@ -80,6 +83,9 @@ func (db *dbRepository) GetUserData(ctx context.Context, user string) ([]entitie
 }
 
 func (db *dbRepository) GetURL(ctx context.Context, key string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
 	var url string
 
 	err := db.db.QueryRow(ctx, "select full_url from url_catalog where short_url=$1 and delete_time is null;", key).Scan(&url)
@@ -95,7 +101,8 @@ func (db *dbRepository) GetURL(ctx context.Context, key string) (string, error) 
 }
 
 func (db *dbRepository) BulkDelete(ctx context.Context, urls []string, userID string) error {
-
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	_, err := db.db.Query(ctx, "UPDATE url_catalog SET delete_time = now() WHERE short_url IN($1) and user_id = $2;", strings.Join(urls, ","), userID)
 
 	if err != nil {
