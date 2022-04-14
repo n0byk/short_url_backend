@@ -22,7 +22,7 @@ type fileRepository struct {
 }
 
 func (f *fileRepository) AddURL(ctx context.Context, url, user string) (string, bool, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	if len(f.urlsDB) == 0 {
@@ -48,7 +48,7 @@ func (f *fileRepository) DBPing() error {
 }
 
 func (f *fileRepository) SetUserData(ctx context.Context, key, url, user string) error {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	f.userData[user] = append(f.userData[user], entities.URLCatalog{ShortURL: key, FullURL: url})
 
@@ -56,7 +56,7 @@ func (f *fileRepository) SetUserData(ctx context.Context, key, url, user string)
 }
 
 func (f *fileRepository) GetUserData(ctx context.Context, user string) ([]entities.URLCatalog, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	data, exists := f.userData[user]
 	if !exists {
@@ -67,7 +67,7 @@ func (f *fileRepository) GetUserData(ctx context.Context, user string) ([]entiti
 }
 
 func (f *fileRepository) GetURL(ctx context.Context, key string) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	var urls = f.urlsDB
 	byteValue, _ := ioutil.ReadAll(f.f)
