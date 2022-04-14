@@ -17,7 +17,7 @@ type memoryRepository struct {
 }
 
 func (m *memoryRepository) AddURL(ctx context.Context, url, user string) (string, bool, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	key := helpers.GenerateToken(config.AppService.ShortLinkLen)
 	m.urlsDB[key] = entities.URLdb{FullURL: url, UserID: user}
@@ -29,7 +29,7 @@ func (m *memoryRepository) DBPing() error {
 }
 
 func (m *memoryRepository) SetUserData(ctx context.Context, key, url, user string) error {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	m.userData[user] = append(m.userData[user], entities.URLCatalog{ShortURL: url, FullURL: key})
 
@@ -37,7 +37,7 @@ func (m *memoryRepository) SetUserData(ctx context.Context, key, url, user strin
 }
 
 func (m *memoryRepository) GetUserData(ctx context.Context, user string) ([]entities.URLCatalog, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	data, exists := m.userData[user]
 	if !exists {
@@ -48,7 +48,7 @@ func (m *memoryRepository) GetUserData(ctx context.Context, user string) ([]enti
 }
 
 func (m *memoryRepository) GetURL(ctx context.Context, key string) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	fullURL, exists := m.urlsDB[key]
 	if !exists {
@@ -59,7 +59,7 @@ func (m *memoryRepository) GetURL(ctx context.Context, key string) (string, erro
 }
 
 func (m *memoryRepository) BulkDelete(ctx context.Context, urls []string, userID string) error {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	for _, v := range urls {
 		delete(m.urlsDB, v)
