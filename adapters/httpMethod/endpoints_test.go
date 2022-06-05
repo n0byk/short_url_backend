@@ -13,7 +13,7 @@ import (
 )
 
 // This example demonstrates how to add new url to the system
-func Example_AddURLHandler() {
+func ExampleAddURLHandler() {
 	r := mux.NewRouter()
 	storage := memory.NewMemoryRepository()
 	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: "http://localhost:8080", Storage: storage}
@@ -34,7 +34,7 @@ func Example_AddURLHandler() {
 }
 
 // This example demonstrates how to add new url to the system
-func Example_DBPing() {
+func ExampleDBPing() {
 
 	r := mux.NewRouter()
 	storage := memory.NewMemoryRepository()
