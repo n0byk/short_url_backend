@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
-	"testing"
 
 	"github.com/gorilla/mux"
 	"github.com/n0byk/short_url_backend/config"
@@ -47,20 +45,4 @@ func ExampleDBPing() {
 
 	// Output:
 	// Match: false []
-}
-
-func TestRouters(t *testing.T) {
-	tests := []struct {
-		name string
-		want *mux.Router
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Routers(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Routers() = %v, want %v", got, tt.want)
-			}
-		})
-	}
 }
