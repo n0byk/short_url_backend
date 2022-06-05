@@ -1,6 +1,8 @@
 package version1
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 
 	handlers "github.com/n0byk/short_url_backend/adapters/httpMethod/handlers"
@@ -9,6 +11,7 @@ import (
 func Routers() *mux.Router {
 
 	router := mux.NewRouter()
+	router.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
 
 	router.HandleFunc("/api/shorten/batch", handlers.BulkAddURL).Methods("POST")
 	router.HandleFunc("/api/user/urls", handlers.BulkDelete).Methods("DELETE")

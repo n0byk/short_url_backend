@@ -11,8 +11,6 @@ import (
 )
 
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("AddURLHandler")
-
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
 
 	if err != nil {

@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	_ "net/http/pprof"
+
 	"github.com/caarlos0/env"
 	"github.com/jackc/pgx/v4"
 
