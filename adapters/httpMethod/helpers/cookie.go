@@ -6,6 +6,7 @@ import (
 	"github.com/n0byk/short_url_backend/helpers"
 )
 
+// Get or Add user cookie info
 func Cookie(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 

@@ -16,6 +16,7 @@ type bulkProps struct {
 	OriginalURL   string `json:"original_url"`
 }
 
+// Multi url insert handler
 func BulkAddURL(w http.ResponseWriter, r *http.Request) {
 	var urlBytes []bulkProps
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)

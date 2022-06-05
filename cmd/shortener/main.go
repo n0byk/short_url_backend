@@ -38,6 +38,7 @@ func init() {
 
 }
 
+// The main function
 func main() {
 	flag.Parse()
 	var storage dataservice.Repository

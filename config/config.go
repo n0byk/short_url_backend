@@ -4,6 +4,7 @@ import (
 	dataservice "github.com/n0byk/short_url_backend/dataservice"
 )
 
+// App config struct
 type AppConfig struct {
 	ServerAddress   string `env:"SERVER_ADDRESS"  envDefault:"localhost:8080"`
 	BaseURL         string `env:"BASE_URL" envDefault:"http://localhost:8080"`

@@ -10,6 +10,7 @@ import (
 	config "github.com/n0byk/short_url_backend/config"
 )
 
+// Get user added urls handler
 func UserURL(w http.ResponseWriter, r *http.Request) {
 	userID, err := r.Cookie("user_id")
 	if err != nil {

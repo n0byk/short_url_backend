@@ -15,6 +15,7 @@ type props struct {
 	URL string `json:"url"`
 }
 
+// Add url by JSON annotation
 func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 	var urlBytes props
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)

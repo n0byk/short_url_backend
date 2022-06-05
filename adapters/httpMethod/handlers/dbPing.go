@@ -6,6 +6,7 @@ import (
 	config "github.com/n0byk/short_url_backend/config"
 )
 
+// Data base ping handler
 func DBPing(w http.ResponseWriter, r *http.Request) {
 	err := config.AppService.Storage.DBPing()
 	if err != nil {

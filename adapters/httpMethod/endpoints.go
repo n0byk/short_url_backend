@@ -8,6 +8,7 @@ import (
 	handlers "github.com/n0byk/short_url_backend/adapters/httpMethod/handlers"
 )
 
+// Service endpoint catalog
 func Routers() *mux.Router {
 
 	router := mux.NewRouter()

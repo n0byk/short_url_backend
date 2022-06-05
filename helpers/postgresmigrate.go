@@ -27,6 +27,7 @@ func Run(ctx context.Context, tx pgx.Tx, qs []string) error {
 	return nil
 }
 
+// Migrate logic
 func Migrate(ctx context.Context, conn *pgx.Conn, funcs Funcs) error {
 	var ks []int64
 	for k := range funcs {
