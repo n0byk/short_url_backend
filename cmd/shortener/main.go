@@ -42,8 +42,7 @@ func init() {
 		log.Fatalf("Unset vars: %v", err)
 	}
 	//go run -ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit=Reolve_19_inc -X 'main.buildDate=$(date +'%Y/%m/%d %H:%M:%S')'" main.go
-	fmt.Printf("Build version: %s\nBuild date: %s\nBuild commit: %s\n", buildVersion, buildDate, buildCommit)
-
+	config.ShowBuildInfo(buildVersion, buildDate, buildCommit)
 }
 
 // The main function
