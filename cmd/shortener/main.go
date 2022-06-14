@@ -26,9 +26,11 @@ import (
 
 var appEnv config.AppConfig
 
-var buildVersion,
-	buildDate,
-	buildCommit string
+var (
+	buildVersion string
+	buildDate    string
+	buildCommit  string
+)
 
 func init() {
 	flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
@@ -39,10 +41,8 @@ func init() {
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
 	}
-	
-	fmt.Println('Build version: %s', buildVersion)
-	fmt.Println('Build date: %s', buildDate)
-	fmt.Println('Build commit: %s', buildCommit)
+	//go run -ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit=Reolve_19_inc -X 'main.buildDate=$(date +'%Y/%m/%d %H:%M:%S')'" main.go
+	fmt.Printf("Build version: %s\nBuild date: %s\nBuild commit: %s\n", buildVersion, buildDate, buildCommit)
 
 }
 
