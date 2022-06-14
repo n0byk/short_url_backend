@@ -2,17 +2,14 @@ package version1
 
 import (
 	"fmt"
+	handlers "github.com/n0byk/short_url_backend/adapters/httpMethod/handlers"
 	"net/http"
 	"net/http/httptest"
-
-	"github.com/gorilla/mux"
-	"github.com/n0byk/short_url_backend/config"
-	"github.com/n0byk/short_url_backend/dataservice/memory"
 )
 
 // This example demonstrates how to add new url to the system
 func ExampleAddURLHandler_Post() {
-	AddURLHandler{}.Post() // Add new url to the system
+	handlers.AddURLHandler{}.Post() // Add new url to the system
 	// Output:
 	// # Request
 	// POST http://localhost:8081/  HTTP/1.1
@@ -27,7 +24,7 @@ func ExampleAddURLHandler_Post() {
 
 // This endpoint check DB connection
 func ExampleDBPing_Get() {
-	DBPing{}.Get() // Check DB connection
+	handlers.DBPing{}.Get() // Check DB connection
 	// Output:
 	// # Request
 	// GET http://localhost:8080/ping HTTP/1.1
