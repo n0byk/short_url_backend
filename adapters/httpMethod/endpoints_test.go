@@ -11,38 +11,30 @@ import (
 )
 
 // This example demonstrates how to add new url to the system
-func ExampleAddURLHandler() {
-	r := mux.NewRouter()
-	storage := memory.NewMemoryRepository()
-	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: "http://localhost:8080", Storage: storage}
-	route := r.NewRoute().HeadersRegexp("Accept", "text/plain")
-
-	req1, _ := http.NewRequest("GET", "http://ya.ru", nil)
-	req1.Header.Add("Accept", "text/plain")
-
-	req2, _ := http.NewRequest("GET", "http://ya123.ru", nil)
-	req2.Header.Set("Accept", "text/plain")
-
-	matchInfo := &mux.RouteMatch{}
-	fmt.Printf("Match: %v %q\n", route.Match(req1, matchInfo), req1.Header["Accept"])
-	fmt.Printf("Match: %v %q\n", route.Match(req2, matchInfo), req2.Header["Accept"])
+func ExampleAddURLHandler_Post() {
+	AddURLHandler{}.Post() // Add new url to the system
 	// Output:
-	// Match: true ["text/plain"]
-	// Match: true ["text/plain"]
+	// # Request
+	// POST http://localhost:8081/  HTTP/1.1
+	// http://ya.ry/
+	// Capsule-Version: 1.2.3
+	//
+	// # Response
+	// HTTP/1.1 200 OK
+	//
+	// http://localhost:8081/VzHAYQi
 }
 
-// This example demonstrates how to add new url to the system
-func ExampleDBPing() {
-
-	r := mux.NewRouter()
-	storage := memory.NewMemoryRepository()
-	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: "http://localhost:8080", Storage: storage}
-	route := r.NewRoute().HeadersRegexp("Accept", "text/plain")
-
-	req := httptest.NewRequest("GET", "http://localhost:8080/ping", nil)
-	matchInfo := &mux.RouteMatch{}
-	fmt.Printf("Match: %v %q\n", route.Match(req, matchInfo), req.Header["Accept"])
-
+// This endpoint check DB connection
+func ExampleDBPing_Get() {
+	DBPing{}.Get() // Check DB connection
 	// Output:
-	// Match: false []
+	// # Request
+	// GET http://localhost:8080/ping HTTP/1.1
+	// Capsule-Version: 1.2.3
+	//
+	// # Response
+	// HTTP/1.1 200 OK
+	// Access-Control-Allow-Origin: https://www.capsulerx.com
+	// Content-Type: application/vnd.api+json
 }
