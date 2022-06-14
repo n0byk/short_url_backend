@@ -9,7 +9,6 @@ import (
 
 // This example demonstrates how to add new url to the system
 func ExampleAddURLHandler_Post() {
-	handlers.AddURLHandler{}.Post() // Add new url to the system
 	// Output:
 	// # Request
 	// POST http://localhost:8081/  HTTP/1.1
@@ -24,7 +23,6 @@ func ExampleAddURLHandler_Post() {
 
 // This endpoint check DB connection
 func ExampleDBPing_Get() {
-	handlers.DBPing{}.Get() // Check DB connection
 	// Output:
 	// # Request
 	// GET http://localhost:8080/ping HTTP/1.1
