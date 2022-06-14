@@ -12,8 +12,7 @@ func ExampleAddURLHandler_Post() {
 	// Output:
 	// # Request
 	// POST http://localhost:8081/  HTTP/1.1
-	// http://ya.ry/
-	// Capsule-Version: 1.2.3
+	// http://ya.ry/ 
 	//
 	// # Response
 	// HTTP/1.1 200 OK
@@ -25,8 +24,7 @@ func ExampleAddURLHandler_Post() {
 func ExampleDBPing_Get() {
 	// Output:
 	// # Request
-	// GET http://localhost:8080/ping HTTP/1.1
-	// Capsule-Version: 1.2.3
+	// GET http://localhost:8080/ping HTTP/1.1 
 	//
 	// # Response
 	// HTTP/1.1 200 OK
