@@ -26,6 +26,10 @@ import (
 
 var appEnv config.AppConfig
 
+var buildVersion,
+	buildDate,
+	buildCommit string
+
 func init() {
 	flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
 	flag.StringVar(&appEnv.BaseURL, "b", "http://localhost:8080", "BASE_URL")
@@ -35,6 +39,10 @@ func init() {
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
 	}
+	
+	fmt.Println('Build version: %s', buildVersion)
+	fmt.Println('Build date: %s', buildDate)
+	fmt.Println('Build commit: %s', buildCommit)
 
 }
 

@@ -1,18 +1,11 @@
 package version1
 
-import (
-	"fmt"
-	handlers "github.com/n0byk/short_url_backend/adapters/httpMethod/handlers"
-	"net/http"
-	"net/http/httptest"
-)
-
 // This example demonstrates how to add new url to the system
 func ExampleAddURLHandler_Post() {
 	// Output:
 	// # Request
 	// POST http://localhost:8081/  HTTP/1.1
-	// http://ya.ry/ 
+	// http://ya.ry/
 	//
 	// # Response
 	// HTTP/1.1 200 OK
@@ -24,7 +17,7 @@ func ExampleAddURLHandler_Post() {
 func ExampleDBPing_Get() {
 	// Output:
 	// # Request
-	// GET http://localhost:8080/ping HTTP/1.1 
+	// GET http://localhost:8080/ping HTTP/1.1
 	//
 	// # Response
 	// HTTP/1.1 200 OK
