@@ -6,8 +6,8 @@ import (
 
 // App config struct
 type AppConfig struct {
-	ServerAddress   string `env:"SERVER_ADDRESS"  envDefault:"localhost:8081"`
-	BaseURL         string `env:"BASE_URL" envDefault:"http://localhost:8081"`
+	ServerAddress   string `env:"SERVER_ADDRESS"  envDefault:"localhost:8080"`
+	BaseURL         string `env:"BASE_URL" envDefault:"http://localhost:8080"`
 	FileStoragePath string `env:"FILE_STORAGE_PATH"`
 	// DB              string `env:"DATABASE_DSN" envDefault:"postgres://developer:developer@localhost:5432/app?sslmode=disable"`
 	DB string `env:"DATABASE_DSN"`
