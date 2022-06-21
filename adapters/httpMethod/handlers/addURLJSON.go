@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -16,8 +15,8 @@ type props struct {
 	URL string `json:"url"`
 }
 
+// Add url by JSON annotation
 func AddURLJSON(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("AddURLJSON")
 	var urlBytes props
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
 	if err != nil {
@@ -59,8 +58,6 @@ func AddURLJSON(w http.ResponseWriter, r *http.Request) {
 	if jsonError != nil {
 		log.Print("Unable to encode JSON")
 	}
-
-	fmt.Println("addURLJSON" + string(bodyBytes))
 	if duplicate {
 		httpMethodHelpers.JSONResponse(w, response, http.StatusConflict)
 		return

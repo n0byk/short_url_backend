@@ -10,9 +10,8 @@ import (
 	config "github.com/n0byk/short_url_backend/config"
 )
 
+// Add url handler
 func AddURLHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("AddURLHandler")
-
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
 
 	if err != nil {

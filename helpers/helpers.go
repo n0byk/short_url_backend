@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 )
 
+// Generate short unique token by params
 func GenerateToken(len int) string {
 	buff := make([]byte, len)
 	rand.Read(buff)

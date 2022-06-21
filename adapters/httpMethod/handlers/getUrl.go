@@ -9,6 +9,7 @@ import (
 	config "github.com/n0byk/short_url_backend/config"
 )
 
+//Get url info handler
 func GetURL(w http.ResponseWriter, r *http.Request) {
 
 	shortURL := mux.Vars(r)["url"]

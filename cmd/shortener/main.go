@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	_ "net/http/pprof"
+
 	"github.com/caarlos0/env"
 	"github.com/jackc/pgx/v4"
 
@@ -24,6 +26,12 @@ import (
 
 var appEnv config.AppConfig
 
+var (
+	buildVersion string
+	buildDate    string
+	buildCommit  string
+)
+
 func init() {
 	flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
 	flag.StringVar(&appEnv.BaseURL, "b", "http://localhost:8080", "BASE_URL")
@@ -33,9 +41,11 @@ func init() {
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
 	}
-
+	//go run -ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit=Reolve_19_inc -X 'main.buildDate=$(date +'%Y/%m/%d %H:%M:%S')'" main.go
+	config.ShowBuildInfo(buildVersion, buildDate, buildCommit)
 }
 
+// The main function
 func main() {
 	flag.Parse()
 	var storage dataservice.Repository

@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -17,8 +16,8 @@ type bulkProps struct {
 	OriginalURL   string `json:"original_url"`
 }
 
+// Multi url insert handler
 func BulkAddURL(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("BulkAddURL")
 	var urlBytes []bulkProps
 	bodyBytes, err := httpMethodHelpers.ReadBodyBytes(r)
 	if err != nil {

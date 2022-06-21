@@ -14,6 +14,7 @@ import (
 
 var wg sync.WaitGroup
 
+// Multi delete handler
 func BulkDelete(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(body) == 0 {
