@@ -7,6 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	_ "net/http/pprof"
 
@@ -37,6 +40,11 @@ func init() {
 	flag.StringVar(&appEnv.BaseURL, "b", "http://localhost:8080", "BASE_URL")
 	flag.StringVar(&appEnv.FileStoragePath, "f", "", "FILE_STORAGE_PATH")
 	flag.StringVar(&appEnv.DB, "d", "", "DATABASE_DSN")
+	flag.StringVar(&appEnv.CONFIG, "c", "", "CONFIG")
+	flag.StringVar(&appEnv.CONFIG, "config", "", "CONFIG")
+	flag.BoolVar(&appEnv.TLS, "s", false, "ENABLE_HTTPS")
+	flag.StringVar(&appEnv.TLScrt, "crt", "./certs/https-server.crt", "TLScrt")
+	flag.StringVar(&appEnv.TLSkey, "key", "./certs/https-server.key", "TLSkey")
 
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
@@ -48,6 +56,10 @@ func init() {
 // The main function
 func main() {
 	flag.Parse()
+
+	if len(appEnv.CONFIG) > 1 {
+		config.ReadJSONConfig(appEnv)
+	}
 	var storage dataservice.Repository
 
 	if appEnv.FileStoragePath != "" {
@@ -84,8 +96,43 @@ func main() {
 
 	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage}
 
+	srv := &http.Server{
+		Addr:    appEnv.ServerAddress,
+		Handler: httpMethodhelpers.Gzip(httpMethodhelpers.Cookie(httpMethod.Routers())),
+	}
+
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+
+	go func() {
+
+		if appEnv.TLS {
+			if err := srv.ListenAndServeTLS(appEnv.TLScrt, appEnv.TLSkey); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
+			}
+		} else {
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
+			}
+
+		}
+
+	}()
+
 	log.Print("Started at " + appEnv.ServerAddress)
 
-	log.Fatal(http.ListenAndServe(appEnv.ServerAddress, httpMethodhelpers.Gzip(httpMethodhelpers.Cookie(httpMethod.Routers()))))
+	<-done
+	log.Print("Server Stopped")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer func() {
+		// extra handling here
+		cancel()
+	}()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Server Shutdown Failed:%+v", err)
+	}
+	log.Print("Server Exited Properly")
 
 }
