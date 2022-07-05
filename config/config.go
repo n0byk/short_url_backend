@@ -56,10 +56,6 @@ func ShowBuildInfo(buildVersion, buildDate, buildCommit string) {
 }
 
 func ReadJSONConfig(appEnv AppConfig) *AppConfig {
-	if len(appEnv.CONFIG) < 1 {
-		return &appEnv
-	}
-
 	jsonConfigFile, err := os.OpenFile(appEnv.CONFIG, os.O_RDONLY, 0644)
 	conf := JSONConfig{}
 
@@ -75,7 +71,7 @@ func ReadJSONConfig(appEnv AppConfig) *AppConfig {
 		}
 	}
 
-	if appEnv.TLS == false {
+	if !appEnv.TLS {
 		appEnv.TLS = conf.EnableHTTPS
 	}
 
