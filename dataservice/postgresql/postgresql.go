@@ -113,6 +113,21 @@ func (db *dbRepository) BulkDelete(ctx context.Context, urls []string, userID st
 	return nil
 }
 
+func (db *dbRepository) StatInfo(ctx context.Context) (entities.StatInfo, error) {
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	res := entities.StatInfo{}
+	err := db.db.QueryRow(context.Background(), `select count(short_url) as urls, count(distinct(user_id)) as users from public.url_catalog where delete_time is null`).Scan(&res.URLs, &res.Users)
+
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+
+}
+
 func NewDBRepository(db *pgx.Conn) dataservice.Repository {
 	return &dbRepository{
 		db: db,

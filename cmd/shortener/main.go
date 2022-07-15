@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -45,6 +46,7 @@ func init() {
 	flag.BoolVar(&appEnv.TLS, "s", false, "ENABLE_HTTPS")
 	flag.StringVar(&appEnv.TLScrt, "crt", "./certs/https-server.crt", "TLScrt")
 	flag.StringVar(&appEnv.TLSkey, "key", "./certs/https-server.key", "TLSkey")
+	flag.StringVar(&appEnv.TrustedSubnet, "t", "", "TRUSTED_SUBNET")
 
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
@@ -72,6 +74,11 @@ func main() {
 		storage = filestorage.NewFileRepository(f)
 	}
 
+	if appEnv.TrustedSubnet != "" {
+		_, appEnv.TrustedCIDR, _ = net.ParseCIDR(appEnv.TrustedSubnet)
+
+	}
+
 	if appEnv.DB != "" {
 		log.Println("Postgres storage init.")
 		conn, err := pgx.Connect(context.Background(), appEnv.DB)
@@ -94,7 +101,7 @@ func main() {
 
 	}
 
-	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage}
+	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage, Env: appEnv}
 
 	srv := &http.Server{
 		Addr:    appEnv.ServerAddress,

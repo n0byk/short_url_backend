@@ -14,4 +14,5 @@ type Repository interface {
 	GetUserData(ctx context.Context, user string) ([]entities.URLCatalog, error)
 	DBPing() error
 	BulkDelete(ctx context.Context, urls []string, userID string) error
+	StatInfo(ctx context.Context) (entities.StatInfo, error)
 }

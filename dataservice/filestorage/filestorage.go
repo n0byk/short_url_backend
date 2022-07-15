@@ -81,6 +81,15 @@ func (f *fileRepository) GetURL(ctx context.Context, key string) (string, error)
 	return fullURL.FullURL, nil
 }
 
+func (f *fileRepository) StatInfo(ctx context.Context) (entities.StatInfo, error) {
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	return entities.StatInfo{
+		URLs:  len(f.urlsDB),
+		Users: len(f.userData),
+	}, nil
+}
+
 func (f *fileRepository) BulkDelete(ctx context.Context, urls []string, userID string) error {
 	for _, v := range urls {
 		delete(f.urlsDB, v)

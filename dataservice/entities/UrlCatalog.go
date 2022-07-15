@@ -11,3 +11,8 @@ type URLdb struct {
 	FullURL string
 	UserID  string
 }
+
+type StatInfo struct {
+	URLs  int `json:"urls"`
+	Users int `json:"users"`
+}
