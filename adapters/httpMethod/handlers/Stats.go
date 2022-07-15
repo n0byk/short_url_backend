@@ -13,8 +13,8 @@ import (
 
 // Get stat info handler
 func Stats(w http.ResponseWriter, r *http.Request) {
-	realIp := r.Header.Get("X-Real-IP")
-	if config.AppService.Env.TrustedCIDR != nil && config.AppService.Env.TrustedCIDR.Contains(net.ParseIP(realIp)) {
+	realIP := r.Header.Get("X-Real-IP")
+	if config.AppService.Env.TrustedCIDR != nil && config.AppService.Env.TrustedCIDR.Contains(net.ParseIP(realIP)) {
 		log.Println("X-Real-IP")
 		w.WriteHeader(http.StatusForbidden)
 		return
