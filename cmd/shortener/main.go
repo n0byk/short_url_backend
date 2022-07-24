@@ -17,6 +17,7 @@ import (
 	"github.com/caarlos0/env"
 	"github.com/jackc/pgx/v4"
 
+	"github.com/n0byk/short_url_backend/adapters/grpcMethod"
 	httpMethod "github.com/n0byk/short_url_backend/adapters/httpMethod"
 	httpMethodhelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	config "github.com/n0byk/short_url_backend/config"
@@ -26,6 +27,10 @@ import (
 	postgresql "github.com/n0byk/short_url_backend/dataservice/postgresql"
 	migrations "github.com/n0byk/short_url_backend/dataservice/postgresql/migrations"
 	helpers "github.com/n0byk/short_url_backend/helpers"
+
+	pb "github.com/n0byk/short_url_backend/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/grpclog"
 )
 
 var appEnv config.AppConfig
@@ -35,6 +40,8 @@ var (
 	buildDate    string
 	buildCommit  string
 )
+
+type server struct{}
 
 func init() {
 	flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
@@ -124,9 +131,22 @@ func main() {
 
 		}
 
+		listener, err := net.Listen("tcp", appEnv.GRPCServerAddress)
+
+		if err != nil {
+			grpclog.Fatalf("failed to listen: %v", err)
+		}
+
+		opts := []grpc.ServerOption{}
+		grpcServer := grpc.NewServer(opts...)
+
+		pb.RegisterServiceLogicServer(grpcServer, &grpcMethod.GRPCLogic{})
+		grpcServer.Serve(listener)
+
 	}()
 
 	log.Print("Started at " + appEnv.ServerAddress)
+	log.Print("GRPC Started at " + appEnv.GRPCServerAddress)
 
 	<-done
 	log.Print("Server Stopped")

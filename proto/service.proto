@@ -1,0 +1,65 @@
+syntax = "proto3";
+//protoc -I . service.proto --go_out=plugins=grpc:.
+
+package service.grpc;
+
+option go_package = "service.proto";
+ 
+message Empty{}
+ 
+message AddURLHandlerRequest {
+  string userID = 1;
+  string value = 2;
+}
+
+message  AddURLHandlerResponse {
+  string value = 1; 
+} 
+
+message GetURLRequest   {
+  string userID = 1;
+  string value = 2;
+}
+
+message GetURLResponse  {
+  string value = 1;
+}
+
+message BulkDeleteRequest {
+  string userID = 1;
+  repeated string values = 2;
+} 
+
+message BulkAddURLRequest {
+  message BulkARequest {
+    string correlation_id = 1;
+    string short_url = 2;
+  }    
+  string userID = 1;
+  repeated BulkARequest original_urls = 2;
+}
+
+message BulkAddURLResponse {
+  message BulkAResponse {
+    string correlation_id = 1;
+    string short_url = 2;
+  } 
+  repeated BulkAResponse short_urls = 2; 
+}
+
+message StatsResponse {
+  int32 urls_count = 1;
+  int32 users_count = 2; 
+}
+
+ 
+service ServiceLogic { 
+  rpc BulkAddURL(BulkAddURLRequest) returns(BulkAddURLResponse) {} 
+  rpc BulkDelete(BulkDeleteRequest) returns(Empty) {} 
+  rpc DBPing(Empty) returns(Empty) {}  
+  rpc AddURLHandler(AddURLHandlerRequest) returns(AddURLHandlerResponse) {}
+  rpc GetURL(GetURLRequest) returns(GetURLResponse) {}    
+  rpc Stats(Empty) returns(StatsResponse) {}  
+}
+
+ 

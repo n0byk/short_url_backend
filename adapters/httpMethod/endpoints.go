@@ -21,7 +21,7 @@ func Routers() *mux.Router {
 	router.HandleFunc("/{url}", handlers.GetURL).Methods("GET")
 	router.HandleFunc("/api/shorten", handlers.AddURLJSON).Methods("POST")
 	router.HandleFunc("/api/user/urls", handlers.UserURL).Methods("GET")
-	router.HandleFunc("/api/internal/stats", handlers.UserURL).Methods("GET")
+	router.HandleFunc("/api/internal/stats", handlers.Stats).Methods("GET")
 
 	return router
 }
