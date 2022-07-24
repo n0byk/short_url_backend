@@ -17,7 +17,7 @@ import (
 	"github.com/caarlos0/env"
 	"github.com/jackc/pgx/v4"
 
-	"github.com/n0byk/short_url_backend/adapters/grpcMethod"
+	grpcmethod "github.com/n0byk/short_url_backend/adapters/grpcMethod"
 	httpMethod "github.com/n0byk/short_url_backend/adapters/httpMethod"
 	httpMethodhelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	config "github.com/n0byk/short_url_backend/config"
@@ -140,7 +140,7 @@ func main() {
 		opts := []grpc.ServerOption{}
 		grpcServer := grpc.NewServer(opts...)
 
-		pb.RegisterServiceLogicServer(grpcServer, &grpcMethod.GRPCLogic{})
+		pb.RegisterServiceLogicServer(grpcServer, &grpcmethod.GRPCLogic{})
 		grpcServer.Serve(listener)
 
 	}()
