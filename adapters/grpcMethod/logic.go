@@ -14,6 +14,7 @@ type GRPCLogic struct {
 
 func (s *GRPCLogic) BulkAddURL(ctx context.Context, in *pb.BulkAddURLRequest) (*pb.BulkAddURLResponse, error) {
 
+	var response = pb.BulkAddURLResponse{}
 	for _, item := range in.OriginalUrls {
 
 		token, _, err := config.AppService.Storage.AddURL(context.Background(), string(item.ShortUrl), in.UserID)
@@ -22,14 +23,11 @@ func (s *GRPCLogic) BulkAddURL(ctx context.Context, in *pb.BulkAddURLRequest) (*
 			return &pb.BulkAddURLResponse{}, err
 		}
 
-		var response = pb.BulkAddURLResponse{}
-
 		config.AppService.Storage.SetUserData(context.Background(), string(item.ShortUrl), config.AppService.BaseURL+"/"+token, in.UserID)
 		response.ShortUrls = append(response.ShortUrls, &pb.BulkAddURLResponse_BulkAResponse{CorrelationId: string(item.CorrelationId), ShortUrl: config.AppService.BaseURL + "/" + token})
 
-		return &response, nil
 	}
-	return &pb.BulkAddURLResponse{}, nil
+	return &response, nil
 
 }
 
