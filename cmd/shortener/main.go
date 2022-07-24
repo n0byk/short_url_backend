@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,6 +17,7 @@ import (
 	"github.com/caarlos0/env"
 	"github.com/jackc/pgx/v4"
 
+	grpcmethod "github.com/n0byk/short_url_backend/adapters/grpcMethod"
 	httpMethod "github.com/n0byk/short_url_backend/adapters/httpMethod"
 	httpMethodhelpers "github.com/n0byk/short_url_backend/adapters/httpMethod/helpers"
 	config "github.com/n0byk/short_url_backend/config"
@@ -25,6 +27,10 @@ import (
 	postgresql "github.com/n0byk/short_url_backend/dataservice/postgresql"
 	migrations "github.com/n0byk/short_url_backend/dataservice/postgresql/migrations"
 	helpers "github.com/n0byk/short_url_backend/helpers"
+
+	pb "github.com/n0byk/short_url_backend/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/grpclog"
 )
 
 var appEnv config.AppConfig
@@ -34,6 +40,8 @@ var (
 	buildDate    string
 	buildCommit  string
 )
+
+type server struct{}
 
 func init() {
 	flag.StringVar(&appEnv.ServerAddress, "a", "localhost:8080", "SERVER_ADDRESS")
@@ -45,6 +53,7 @@ func init() {
 	flag.BoolVar(&appEnv.TLS, "s", false, "ENABLE_HTTPS")
 	flag.StringVar(&appEnv.TLScrt, "crt", "./certs/https-server.crt", "TLScrt")
 	flag.StringVar(&appEnv.TLSkey, "key", "./certs/https-server.key", "TLSkey")
+	flag.StringVar(&appEnv.TrustedSubnet, "t", "", "TRUSTED_SUBNET")
 
 	if err := env.Parse(&appEnv); err != nil {
 		log.Fatalf("Unset vars: %v", err)
@@ -72,6 +81,11 @@ func main() {
 		storage = filestorage.NewFileRepository(f)
 	}
 
+	if appEnv.TrustedSubnet != "" {
+		_, appEnv.TrustedCIDR, _ = net.ParseCIDR(appEnv.TrustedSubnet)
+
+	}
+
 	if appEnv.DB != "" {
 		log.Println("Postgres storage init.")
 		conn, err := pgx.Connect(context.Background(), appEnv.DB)
@@ -94,7 +108,7 @@ func main() {
 
 	}
 
-	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage}
+	config.AppService = config.Service{ShortLinkLen: 7, BaseURL: appEnv.BaseURL, Storage: storage, Env: appEnv}
 
 	srv := &http.Server{
 		Addr:    appEnv.ServerAddress,
@@ -117,9 +131,22 @@ func main() {
 
 		}
 
+		listener, err := net.Listen("tcp", appEnv.GRPCServerAddress)
+
+		if err != nil {
+			grpclog.Fatalf("failed to listen: %v", err)
+		}
+
+		opts := []grpc.ServerOption{}
+		grpcServer := grpc.NewServer(opts...)
+
+		pb.RegisterServiceLogicServer(grpcServer, &grpcmethod.GRPCLogic{})
+		grpcServer.Serve(listener)
+
 	}()
 
 	log.Print("Started at " + appEnv.ServerAddress)
+	log.Print("GRPC Started at " + appEnv.GRPCServerAddress)
 
 	<-done
 	log.Print("Server Stopped")

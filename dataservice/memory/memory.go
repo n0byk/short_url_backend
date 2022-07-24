@@ -68,6 +68,15 @@ func (m *memoryRepository) BulkDelete(ctx context.Context, urls []string, userID
 	return nil
 }
 
+func (m *memoryRepository) StatInfo(ctx context.Context) (entities.StatInfo, error) {
+	_, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	return entities.StatInfo{
+		URLs:  len(m.urlsDB),
+		Users: len(m.userData),
+	}, nil
+}
+
 func NewMemoryRepository() dataservice.Repository {
 	return &memoryRepository{urlsDB: make(map[string]entities.URLdb), userData: make(map[string][]entities.URLCatalog)}
 }
