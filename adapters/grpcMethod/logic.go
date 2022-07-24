@@ -35,7 +35,11 @@ func (s *GRPCLogic) BulkAddURL(ctx context.Context, in *pb.BulkAddURLRequest) (*
 
 func (s *GRPCLogic) BulkDelete(ctx context.Context, in *pb.BulkDeleteRequest) (*pb.Empty, error) {
 
-	config.AppService.Storage.BulkDelete(context.Background(), in.Values, in.UserID)
+	err := config.AppService.Storage.BulkDelete(context.Background(), in.Values, in.UserID)
+
+	if err != nil {
+		return &pb.Empty{}, err
+	}
 
 	return &pb.Empty{}, nil
 }
