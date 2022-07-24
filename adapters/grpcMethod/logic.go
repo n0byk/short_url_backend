@@ -21,11 +21,16 @@ func (s *GRPCLogic) BulkAddURL(ctx context.Context, in *pb.BulkAddURLRequest) (*
 			log.Println("Unable to get token")
 			return &pb.BulkAddURLResponse{}, err
 		}
-		var response []pb.BulkAddURLResponse_BulkAResponse
+
+		var response = pb.BulkAddURLResponse{}
+
 		config.AppService.Storage.SetUserData(context.Background(), string(item.ShortUrl), config.AppService.BaseURL+"/"+token, in.UserID)
-		response = append(response, pb.BulkAddURLResponse_BulkAResponse{CorrelationId: string(item.CorrelationId), ShortUrl: config.AppService.BaseURL + "/" + token})
+		response.ShortUrls = append(response.ShortUrls, &pb.BulkAddURLResponse_BulkAResponse{CorrelationId: string(item.CorrelationId), ShortUrl: config.AppService.BaseURL + "/" + token})
+
+		return &response, nil
 	}
 	return &pb.BulkAddURLResponse{}, nil
+
 }
 
 func (s *GRPCLogic) BulkDelete(ctx context.Context, in *pb.BulkDeleteRequest) (*pb.Empty, error) {
